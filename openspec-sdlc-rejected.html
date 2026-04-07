@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OpenSpec SDLC — Rejected Options Archive</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; overflow: hidden; }
+  body { font-family: 'Outfit', sans-serif; background: #0a0e1a; color: #e6edf3; }
+
+  /* ═══ ARCHIVE NOTICE ═══ */
+  .archive-notice {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 10000;
+    background: rgba(210, 153, 34, 0.12);
+    border-bottom: 1px solid rgba(210, 153, 34, 0.25);
+    color: #d29922;
+    font-size: 11px; font-weight: 500;
+    text-align: center;
+    padding: 4px 12px;
+    letter-spacing: 0.5px;
+  }
+
+  /* ═══ TAB BAR ═══ */
+  .tab-bar {
+    position: fixed; top: 24px; left: 0; right: 0; z-index: 9999;
+    display: flex; align-items: center; gap: 0;
+    background: rgba(10, 14, 26, 0.92);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    padding: 0 16px;
+    height: 48px;
+    overflow-x: auto;
+  }
+  .tab-bar button {
+    font-family: 'Outfit', sans-serif;
+    font-size: 13px; font-weight: 500;
+    color: #8b949e; background: none; border: none;
+    padding: 14px 18px; cursor: pointer;
+    white-space: nowrap;
+    border-bottom: 2px solid transparent;
+    transition: color 0.2s, border-color 0.2s;
+  }
+  .tab-bar button:hover { color: #c9d1d9; }
+  .tab-bar button.active {
+    color: #58a6ff;
+    border-bottom-color: #58a6ff;
+  }
+
+  /* ═══ PANELS ═══ */
+  .panel {
+    position: fixed; top: 72px; left: 0; right: 0; bottom: 0;
+    display: none; overflow: auto;
+  }
+  .panel.active { display: block; }
+
+  /* ═══════════════════════════════════════════════════════════
+     OPTION 2: NEON CIRCUIT BOARD
+     ═══════════════════════════════════════════════════════════ */
+  #panel2 {
+    background-color: #080c14;
+    background-image:
+      radial-gradient(ellipse 600px 400px at 50% 50%, rgba(88,166,255,0.06) 0%, transparent 100%),
+      linear-gradient(to right, rgba(88,166,255,0.04) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(88,166,255,0.04) 1px, transparent 1px);
+    background-size: 100% 100%, 40px 40px, 40px 40px;
+    font-family: 'JetBrains Mono', monospace;
+    display: none; padding: 40px 20px;
+  }
+  #panel2.active { display: flex; flex-direction: column; align-items: center; justify-content: center; }
+
+  .o2-title { font-family: 'Outfit', sans-serif; font-size: 32px; font-weight: 700; color: #58a6ff; text-shadow: 0 0 20px rgba(88,166,255,0.4); margin-bottom: 60px; letter-spacing: 1px; text-align: center; }
+  .o2-diagram { position: relative; display: flex; align-items: center; justify-content: center; gap: 100px; }
+  .o2-traces-svg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; overflow: visible; }
+  .o2-trace-line { fill: none; stroke: rgba(88,166,255,0.2); stroke-width: 2; }
+  .o2-trace-flow { fill: none; stroke: #58a6ff; stroke-width: 2; stroke-dasharray: 12 80; animation: o2-traceFlow 4s linear infinite; }
+  @keyframes o2-traceFlow { to { stroke-dashoffset: -92; } }
+  .o2-solder-dot { fill: rgba(88,166,255,0.4); animation: o2-solderPulse 3s ease-in-out infinite; }
+  @keyframes o2-solderPulse { 0%,100% { opacity: 0.4; } 50% { opacity: 1; } }
+  .o2-trace-arrow { fill: rgba(88,166,255,0.45); }
+  .o2-phase { display: flex; flex-direction: column; align-items: center; z-index: 1; }
+  .o2-chips { display: flex; gap: 12px; }
+  .o2-chip { position: relative; width: 70px; height: 28px; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(88,166,255,0.25); background: rgba(88,166,255,0.03); font-size: 11px; color: #8b949e; }
+  .o2-chip::before, .o2-chip::after { content: ''; position: absolute; top: 50%; width: 8px; border-top: 1px solid rgba(88,166,255,0.25); }
+  .o2-chip::before { right: 100%; }
+  .o2-chip::after { left: 100%; }
+  .o2-trace-down { width: 2px; height: 18px; background: rgba(88,166,255,0.15); }
+  .o2-hex-wrap { position: relative; width: 140px; height: 150px; }
+  .o2-hex-glow { position: absolute; inset: -4px; clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%); background: rgba(88,166,255,0.08); }
+  .o2-hex { position: absolute; inset: 0; clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%); background: rgba(88,166,255,0.04); box-shadow: 0 0 15px rgba(88,166,255,0.3), 0 0 40px rgba(88,166,255,0.1), inset 0 0 20px rgba(88,166,255,0.05); display: flex; align-items: center; justify-content: center; }
+  .o2-hex-label { font-size: 18px; font-weight: 600; color: #58a6ff; text-shadow: 0 0 12px rgba(88,166,255,0.35); position: relative; z-index: 2; }
+  .o2-led { position: absolute; top: 22px; right: 18px; width: 8px; height: 8px; border-radius: 50%; background: #3fb950; box-shadow: 0 0 6px rgba(63,185,80,0.6); animation: o2-ledBlink 2s ease-in-out infinite; z-index: 3; }
+  @keyframes o2-ledBlink { 0%,100% { opacity: 0.3; } 50% { opacity: 1; } }
+  .o2-phase:nth-child(2) .o2-led { animation-delay: 0.6s; }
+  .o2-phase:nth-child(3) .o2-led { animation-delay: 1.2s; }
+  .o2-tagline { margin-top: 60px; font-size: 14px; color: #8b949e; text-align: center; max-width: 600px; line-height: 1.6; font-family: 'JetBrains Mono', monospace; }
+
+  @media (max-width: 760px) {
+    .o2-diagram { flex-direction: column; gap: 60px; }
+    .o2-traces-svg { display: none; }
+  }
+
+  /* ═══════════════════════════════════════════════════════════
+     OPTION 3: ORBITAL SYSTEM
+     ═══════════════════════════════════════════════════════════ */
+  #panel3 { background: #050810; display: none; overflow: hidden; position: relative; }
+  #panel3.active { display: flex; flex-direction: column; align-items: center; justify-content: center; }
+
+  .o3-starfield { position: absolute; inset: 0; pointer-events: none; z-index: 0; }
+  .o3-star { position: absolute; border-radius: 50%; background: #fff; }
+  .o3-central-glow { position: absolute; top: 50%; left: 50%; width: 700px; height: 700px; transform: translate(-50%,-50%); background: radial-gradient(circle, rgba(88,166,255,0.08) 0%, rgba(88,166,255,0.03) 35%, transparent 70%); pointer-events: none; z-index: 0; }
+  .o3-title { position: relative; z-index: 2; font-size: 40px; font-weight: 700; text-align: center; margin-bottom: 48px; text-shadow: 0 0 30px rgba(88,166,255,0.35), 0 0 60px rgba(88,166,255,0.12); }
+  .o3-tagline { position: relative; z-index: 2; font-size: 16px; font-weight: 300; color: #8b949e; text-align: center; margin-top: 48px; max-width: 560px; line-height: 1.6; }
+  .o3-stage { position: relative; z-index: 1; perspective: 1200px; }
+  .o3-stage-inner { display: flex; align-items: center; justify-content: center; gap: 180px; transform: rotateX(12deg); transform-style: preserve-3d; position: relative; }
+  .o3-connectors { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; overflow: visible; }
+  .o3-connector-path { fill: none; stroke-width: 2; stroke-dasharray: 8 6; animation: o3-dash-flow 1.8s linear infinite; }
+  .o3-connector-path.propose-apply { stroke: rgba(121,192,255,0.45); }
+  .o3-connector-path.apply-archive { stroke: rgba(110,231,183,0.45); }
+  @keyframes o3-dash-flow { to { stroke-dashoffset: -28; } }
+  .o3-planet-group { position: relative; width: 200px; height: 200px; display: flex; align-items: center; justify-content: center; z-index: 1; transform-style: preserve-3d; }
+  .o3-planet { width: 130px; height: 130px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 700; color: #fff; position: relative; z-index: 3; text-shadow: 0 1px 4px rgba(0,0,0,0.6); }
+  .o3-planet--propose { background: radial-gradient(circle at 35% 35%, #79c0ff, #58a6ff, #1a3a6a, #0d1f3a); box-shadow: 0 0 40px rgba(88,166,255,0.3), 0 0 80px rgba(88,166,255,0.1); }
+  .o3-planet--apply { background: radial-gradient(circle at 35% 35%, #6ee7b7, #1abc9c, #0d5c4f, #062b25); box-shadow: 0 0 40px rgba(26,188,156,0.3), 0 0 80px rgba(26,188,156,0.1); }
+  .o3-planet--archive { background: radial-gradient(circle at 35% 35%, #a5b4fc, #748ffc, #2d3470, #151b3a); box-shadow: 0 0 40px rgba(116,143,252,0.3), 0 0 80px rgba(116,143,252,0.1); }
+  .o3-orbit-ring { position: absolute; width: 200px; height: 60px; border: 2px solid transparent; border-radius: 50%; top: 50%; left: 50%; margin-left: -100px; margin-top: -30px; transform-style: preserve-3d; animation: o3-spin 18s linear infinite; z-index: 2; }
+  .o3-orbit-ring--propose { border-color: rgba(88,166,255,0.25); box-shadow: 0 0 6px rgba(88,166,255,0.08); }
+  .o3-orbit-ring--apply { border-color: rgba(26,188,156,0.25); box-shadow: 0 0 6px rgba(26,188,156,0.08); animation-duration: 16s; }
+  .o3-orbit-ring--archive { border-color: rgba(116,143,252,0.25); box-shadow: 0 0 6px rgba(116,143,252,0.08); animation-duration: 20s; }
+  @keyframes o3-spin { from { transform: rotateX(70deg) rotateZ(0deg); } to { transform: rotateX(70deg) rotateZ(360deg); } }
+  .o3-moon { position: absolute; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transform-style: preserve-3d; }
+  .o3-moon--a { top: 50%; left: 0; margin-left: -18px; margin-top: -18px; }
+  .o3-moon--b { top: 50%; right: 0; margin-right: -18px; margin-top: -18px; }
+  .o3-moon-sphere { width: 36px; height: 36px; border-radius: 50%; }
+  .o3-moon--propose .o3-moon-sphere { background: radial-gradient(circle at 35% 35%, #5fa8dc, #3a7ab8, #152a4a, #0a1528); box-shadow: 0 0 12px rgba(88,166,255,0.2); }
+  .o3-moon--apply .o3-moon-sphere { background: radial-gradient(circle at 35% 35%, #4cc99a, #14866b, #0a3c30, #041e18); box-shadow: 0 0 12px rgba(26,188,156,0.2); }
+  .o3-moon--archive .o3-moon-sphere { background: radial-gradient(circle at 35% 35%, #8c9ce0, #5a6ec8, #222a54, #101530); box-shadow: 0 0 12px rgba(116,143,252,0.2); }
+  .o3-moon-label { position: absolute; bottom: -20px; left: 50%; transform: translateX(-50%) rotateX(-70deg); font-size: 12px; color: #c9d1d9; white-space: nowrap; text-shadow: 0 0 6px rgba(0,0,0,0.8); pointer-events: none; }
+
+  @media (max-width: 860px) {
+    .o3-stage-inner { gap: 80px; transform: none; }
+    .o3-planet { width: 100px; height: 100px; font-size: 16px; }
+    .o3-planet-group { width: 160px; height: 160px; }
+    .o3-orbit-ring { width: 160px; height: 50px; margin-left: -80px; margin-top: -25px; }
+  }
+  @media (max-width: 580px) {
+    .o3-stage-inner { flex-direction: column; gap: 60px; transform: none; }
+    .o3-connectors { display: none; }
+    .o3-planet { width: 90px; height: 90px; font-size: 15px; }
+  }
+
+  /* ═══ REDUCED MOTION ═══ */
+  @media (prefers-reduced-motion: reduce) {
+    .o2-trace-flow, .o2-solder-dot, .o2-led,
+    .o3-orbit-ring, .o3-connector-path { animation: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══ ARCHIVE NOTICE ═══ -->
+<div class="archive-notice">ARCHIVED — Rejected design options from the previous round</div>
+
+<!-- ═══ TAB BAR ═══ -->
+<div class="tab-bar" id="tabBar">
+  <button class="active" data-panel="panel2">1. Circuit Board</button>
+  <button data-panel="panel3">2. Orbital</button>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     PANEL 2: NEON CIRCUIT BOARD
+     ═══════════════════════════════════════════ -->
+<div class="panel active" id="panel2">
+  <h1 class="o2-title">OpenSpec SDLC</h1>
+  <div class="o2-diagram" id="o2Diagram">
+    <div class="o2-phase">
+      <div class="o2-chips"><div class="o2-chip">Refine</div><div class="o2-chip">Review</div></div>
+      <div class="o2-trace-down"></div>
+      <div class="o2-hex-wrap"><div class="o2-hex-glow"></div><div class="o2-hex"><span class="o2-hex-label">Propose</span></div><span class="o2-led"></span></div>
+    </div>
+    <div class="o2-phase">
+      <div class="o2-chips"><div class="o2-chip">Test</div><div class="o2-chip">Verify</div></div>
+      <div class="o2-trace-down"></div>
+      <div class="o2-hex-wrap"><div class="o2-hex-glow"></div><div class="o2-hex"><span class="o2-hex-label">Apply</span></div><span class="o2-led"></span></div>
+    </div>
+    <div class="o2-phase">
+      <div class="o2-chips"><div class="o2-chip">Merge</div><div class="o2-chip">Docs</div></div>
+      <div class="o2-trace-down"></div>
+      <div class="o2-hex-wrap"><div class="o2-hex-glow"></div><div class="o2-hex"><span class="o2-hex-label">Archive</span></div><span class="o2-led"></span></div>
+    </div>
+    <svg class="o2-traces-svg" id="o2TracesSvg">
+      <defs><marker id="o2ArrowHead" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" class="o2-trace-arrow"/></marker></defs>
+    </svg>
+  </div>
+  <p class="o2-tagline">Lightweight delta-based workflow — each change proposes, applies, and archives spec deltas</p>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     PANEL 3: ORBITAL SYSTEM
+     ═══════════════════════════════════════════ -->
+<div class="panel" id="panel3">
+  <div class="o3-starfield" id="o3Starfield"></div>
+  <div class="o3-central-glow"></div>
+  <h1 class="o3-title">OpenSpec SDLC</h1>
+  <div class="o3-stage">
+    <div class="o3-stage-inner" id="o3StageInner">
+      <svg class="o3-connectors" id="o3ConnectorsSvg" viewBox="0 0 100 100" preserveAspectRatio="none"></svg>
+      <div class="o3-planet-group" id="o3PgPropose">
+        <div class="o3-planet o3-planet--propose">Propose</div>
+        <div class="o3-orbit-ring o3-orbit-ring--propose">
+          <div class="o3-moon o3-moon--a o3-moon--propose"><div class="o3-moon-sphere"></div><span class="o3-moon-label">Refine</span></div>
+          <div class="o3-moon o3-moon--b o3-moon--propose"><div class="o3-moon-sphere"></div><span class="o3-moon-label">Review</span></div>
+        </div>
+      </div>
+      <div class="o3-planet-group" id="o3PgApply">
+        <div class="o3-planet o3-planet--apply">Apply</div>
+        <div class="o3-orbit-ring o3-orbit-ring--apply">
+          <div class="o3-moon o3-moon--a o3-moon--apply"><div class="o3-moon-sphere"></div><span class="o3-moon-label">Test</span></div>
+          <div class="o3-moon o3-moon--b o3-moon--apply"><div class="o3-moon-sphere"></div><span class="o3-moon-label">Verify</span></div>
+        </div>
+      </div>
+      <div class="o3-planet-group" id="o3PgArchive">
+        <div class="o3-planet o3-planet--archive">Archive</div>
+        <div class="o3-orbit-ring o3-orbit-ring--archive">
+          <div class="o3-moon o3-moon--a o3-moon--archive"><div class="o3-moon-sphere"></div><span class="o3-moon-label">Merge</span></div>
+          <div class="o3-moon o3-moon--b o3-moon--archive"><div class="o3-moon-sphere"></div><span class="o3-moon-label">Docs</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <p class="o3-tagline">Lightweight delta-based workflow — each change proposes, applies, and archives spec deltas</p>
+</div>
+
+<!-- ═══ JAVASCRIPT ═══ -->
+<script>
+(function() {
+  'use strict';
+
+  // ── Tab switching ──
+  var tabBar = document.getElementById('tabBar');
+  var buttons = tabBar.querySelectorAll('button');
+  var panels = document.querySelectorAll('.panel');
+  var inited = { panel2: true };
+
+  function switchTo(panelId) {
+    buttons.forEach(function(b) { b.classList.toggle('active', b.getAttribute('data-panel') === panelId); });
+    panels.forEach(function(p) { p.classList.toggle('active', p.id === panelId); });
+    if (!inited[panelId]) {
+      inited[panelId] = true;
+      if (panelId === 'panel3') initPanel3();
+    }
+    if (panelId === 'panel2') setTimeout(drawO2Traces, 50);
+    if (panelId === 'panel3') setTimeout(drawO3Connectors, 50);
+  }
+
+  buttons.forEach(function(btn) {
+    btn.addEventListener('click', function() { switchTo(this.getAttribute('data-panel')); });
+  });
+
+  // ── PANEL 2: Circuit Board traces ──
+  function drawO2Traces() {
+    var svg = document.getElementById('o2TracesSvg');
+    var diagram = document.getElementById('o2Diagram');
+    var phases = diagram.querySelectorAll('.o2-phase');
+    if (phases.length < 2) return;
+    svg.querySelectorAll('.o2dyn').forEach(function(el) { el.remove(); });
+    var dRect = diagram.getBoundingClientRect();
+    for (var i = 0; i < phases.length - 1; i++) {
+      var hexA = phases[i].querySelector('.o2-hex-wrap');
+      var hexB = phases[i+1].querySelector('.o2-hex-wrap');
+      var rA = hexA.getBoundingClientRect(), rB = hexB.getBoundingClientRect();
+      var x1 = rA.right - dRect.left, y1 = rA.top + rA.height/2 - dRect.top;
+      var x2 = rB.left - dRect.left, y2 = rB.top + rB.height/2 - dRect.top;
+      var midX = (x1+x2)/2;
+      var d = 'M'+x1+','+y1+' L'+midX+','+y1+' L'+midX+','+y2+' L'+x2+','+y2;
+      var ns = 'http://www.w3.org/2000/svg';
+      var basePath = document.createElementNS(ns,'path'); basePath.setAttribute('d',d); basePath.setAttribute('class','o2-trace-line o2dyn'); basePath.setAttribute('marker-end','url(#o2ArrowHead)'); svg.appendChild(basePath);
+      var flowPath = document.createElementNS(ns,'path'); flowPath.setAttribute('d',d); flowPath.setAttribute('class','o2-trace-flow o2dyn'); flowPath.style.animationDelay = (i*1.2)+'s'; svg.appendChild(flowPath);
+      [[midX,y1],[midX,y2]].forEach(function(c) { var dot = document.createElementNS(ns,'circle'); dot.setAttribute('cx',c[0]); dot.setAttribute('cy',c[1]); dot.setAttribute('r','3'); dot.setAttribute('class','o2-solder-dot o2dyn'); svg.appendChild(dot); });
+    }
+  }
+  // Init panel2 immediately since it's the default active tab
+  drawO2Traces();
+  window.addEventListener('resize', drawO2Traces);
+
+  // ── PANEL 3: Orbital stars & connectors ──
+  function initPanel3() {
+    var field = document.getElementById('o3Starfield');
+    for (var i = 0; i < 80; i++) {
+      var star = document.createElement('div'); star.className = 'o3-star';
+      var size = Math.random() < 0.6 ? 1 : 2;
+      star.style.width = size+'px'; star.style.height = size+'px';
+      star.style.left = Math.random()*100+'%'; star.style.top = Math.random()*100+'%';
+      star.style.opacity = (0.2+Math.random()*0.5).toFixed(2);
+      if (Math.random()>0.6) star.style.background = '#aad4ff';
+      field.appendChild(star);
+    }
+    drawO3Connectors();
+    window.addEventListener('resize', drawO3Connectors);
+  }
+
+  function drawO3Connectors() {
+    var inner = document.getElementById('o3StageInner');
+    var svg = document.getElementById('o3ConnectorsSvg');
+    if (!inner||!svg) return;
+    var propose = document.getElementById('o3PgPropose');
+    var apply = document.getElementById('o3PgApply');
+    var archive = document.getElementById('o3PgArchive');
+    if (!propose||!apply||!archive) return;
+    var rect = inner.getBoundingClientRect();
+    if (rect.width===0) return;
+    svg.setAttribute('viewBox','0 0 '+rect.width+' '+rect.height);
+    function center(el) { var r=el.getBoundingClientRect(); return { x:r.left+r.width/2-rect.left, y:r.top+r.height/2-rect.top }; }
+    var pA=center(propose), pB=center(apply), pC=center(archive);
+    var ns='http://www.w3.org/2000/svg';
+    svg.innerHTML='';
+    var defs=document.createElementNS(ns,'defs');
+    function makeMarker(id,color) { var m=document.createElementNS(ns,'marker'); m.setAttribute('id',id); m.setAttribute('markerWidth','8'); m.setAttribute('markerHeight','8'); m.setAttribute('refX','7'); m.setAttribute('refY','4'); m.setAttribute('orient','auto'); var p=document.createElementNS(ns,'polygon'); p.setAttribute('points','0,1 8,4 0,7'); p.setAttribute('fill',color); m.appendChild(p); defs.appendChild(m); }
+    makeMarker('o3arrowPA','rgba(121,192,255,0.5)'); makeMarker('o3arrowAA','rgba(110,231,183,0.5)');
+    svg.appendChild(defs);
+    function curvePath(from,to,bend) { var mx=(from.x+to.x)/2, my=(from.y+to.y)/2+bend; return 'M'+from.x+','+from.y+' Q'+mx+','+my+' '+to.x+','+to.y; }
+    var path1=document.createElementNS(ns,'path'); path1.setAttribute('d',curvePath(pA,pB,-30)); path1.setAttribute('class','o3-connector-path propose-apply'); path1.setAttribute('marker-end','url(#o3arrowPA)'); svg.appendChild(path1);
+    var path2=document.createElementNS(ns,'path'); path2.setAttribute('d',curvePath(pB,pC,-30)); path2.setAttribute('class','o3-connector-path apply-archive'); path2.setAttribute('marker-end','url(#o3arrowAA)'); svg.appendChild(path2);
+  }
+
+})();
+</script>
+</body>
+</html>

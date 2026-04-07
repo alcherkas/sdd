@@ -1,0 +1,1134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Spec-Driven Development — A Practitioner's Reference for AI Coding Agents</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.1.0/reveal.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.1.0/theme/black.min.css" id="theme">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.1.0/plugin/highlight/monokai.min.css">
+
+  <style>
+    :root {
+      --r-main-font-size: 32px;
+      --r-heading1-size: 1.8em;
+      --r-heading2-size: 1.4em;
+      --r-heading3-size: 1.1em;
+    }
+
+    .reveal { font-family: 'Outfit', system-ui, -apple-system, sans-serif; }
+    .reveal-viewport, .reveal .backgrounds { background: radial-gradient(ellipse at 20% 30%, #0d1b2e 0%, #090e17 45%, #0a0d14 100%); }
+
+    .reveal h1, .reveal h2, .reveal h3 { text-transform: none; font-weight: 700; letter-spacing: -0.02em; }
+
+    /* Gradient headings — Neon Dusk */
+    .reveal h1 {
+      background: linear-gradient(120deg, #f783ac 0%, #cc5de8 50%, #748ffc 100%);
+      -webkit-background-clip: text !important; -webkit-text-fill-color: transparent !important; background-clip: text !important;
+      color: transparent !important;
+    }
+    .reveal h2 {
+      background: linear-gradient(120deg, #f783ac 0%, #cc5de8 50%, #748ffc 100%);
+      -webkit-background-clip: text !important; -webkit-text-fill-color: transparent !important; background-clip: text !important;
+      color: transparent !important;
+    }
+    .reveal h3 {
+      background: linear-gradient(120deg, #e599f7 0%, #9775fa 100%);
+      -webkit-background-clip: text !important; -webkit-text-fill-color: transparent !important; background-clip: text !important;
+      color: transparent !important;
+    }
+
+    .reveal .slides section { text-align: left; }
+    .reveal .slides section.center-slide { text-align: center; }
+
+    .stat-box { background: linear-gradient(145deg, rgba(88,166,255,0.16) 0%, rgba(26,188,156,0.07) 55%, transparent 100%); border: 1px solid rgba(88,166,255,0.18); padding: 0.5em 1em; margin: 0.4em 0; font-size: 0.85em; border-radius: 8px; }
+    .stat-number { font-weight: 700; font-size: 1.1em; background: linear-gradient(135deg, #ff7b72 30%, #ffa657 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .warn-box { background: linear-gradient(145deg, rgba(255,123,114,0.16) 0%, rgba(255,166,87,0.07) 55%, transparent 100%); border: 1px solid rgba(255,123,114,0.2); padding: 0.5em 1em; margin: 0.4em 0; font-size: 0.85em; border-radius: 8px; }
+    .good-box { background: linear-gradient(145deg, rgba(63,185,80,0.16) 0%, rgba(88,166,255,0.06) 55%, transparent 100%); border: 1px solid rgba(63,185,80,0.2); padding: 0.5em 1em; margin: 0.4em 0; font-size: 0.85em; border-radius: 8px; }
+    .info-box { background: linear-gradient(145deg, rgba(210,168,255,0.16) 0%, rgba(255,123,114,0.06) 55%, transparent 100%); border: 1px solid rgba(210,168,255,0.18); padding: 0.5em 1em; margin: 0.4em 0; font-size: 0.85em; border-radius: 8px; }
+
+    .reveal table {
+      font-size: 0.63em;
+      margin: 0.5em auto;
+      border-collapse: separate;
+      border-spacing: 0;
+      width: 95%;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 4px 32px rgba(0,0,0,0.5), 0 0 0 1px rgba(88,166,255,0.18);
+    }
+    .reveal table thead tr { background: linear-gradient(120deg, rgba(88,166,255,0.22) 0%, rgba(121,192,255,0.12) 100%); }
+    .reveal table th {
+      color: #79c0ff;
+      padding: 0.55em 0.85em;
+      text-align: left;
+      font-weight: 600;
+      font-size: 0.88em;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      border-bottom: 1px solid rgba(88,166,255,0.3);
+    }
+    .reveal table td {
+      padding: 0.42em 0.85em;
+      border-bottom: 1px solid rgba(255,255,255,0.055);
+      vertical-align: top;
+      transition: background 0.15s;
+    }
+    .reveal table tbody tr:nth-child(even) td { background: rgba(255,255,255,0.028); }
+    .reveal table tbody tr:hover td { background: rgba(88,166,255,0.09); }
+    .reveal table tr:last-child td { border-bottom: none; }
+
+    .reveal ul, .reveal ol { font-size: 0.85em; margin-left: 0.2em; padding-left: 0; list-style: none; }
+    .reveal li { margin-bottom: 0.38em; line-height: 1.5; padding-left: 1.4em; position: relative; }
+
+    /* Bullet lists — glowing dot */
+    .reveal ul > li::before {
+      content: '';
+      position: absolute;
+      left: 0.15em;
+      top: 0.58em;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #58a6ff;
+      box-shadow: 0 0 6px rgba(88,166,255,0.7);
+    }
+
+    /* Ordered lists — accent counter */
+    .reveal ol { counter-reset: slick-ol; }
+    .reveal ol > li { counter-increment: slick-ol; }
+    .reveal ol > li::before {
+      content: counter(slick-ol);
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1.1em;
+      text-align: right;
+      color: #58a6ff;
+      font-weight: 700;
+      font-size: 0.88em;
+      line-height: 1.7;
+    }
+
+    /* Nested lists */
+    .reveal ul ul > li::before { background: #3fb950; box-shadow: 0 0 5px rgba(63,185,80,0.6); width: 5px; height: 5px; top: 0.65em; }
+    .reveal ul ul, .reveal ol ol { font-size: 0.95em; margin-top: 0.2em; }
+
+    .layer-badge { display: inline-block; padding: 0.15em 0.6em; border-radius: 4px; font-weight: 700; font-size: 0.7em; margin-bottom: 0.3em; }
+    .badge-infra  { background: linear-gradient(135deg, rgba(88,166,255,0.28) 0%, rgba(26,188,156,0.12) 100%); border: 1px solid rgba(88,166,255,0.45); }
+    .badge-os     { background: linear-gradient(135deg, rgba(88,166,255,0.22) 0%, rgba(121,192,255,0.10) 100%); border: 1px solid rgba(88,166,255,0.38); }
+    .badge-net    { background: linear-gradient(135deg, rgba(52,152,219,0.28) 0%, rgba(88,166,255,0.12) 100%); border: 1px solid rgba(52,152,219,0.45); }
+    .badge-fs     { background: linear-gradient(135deg, rgba(155,89,182,0.28) 0%, rgba(210,168,255,0.12) 100%); border: 1px solid rgba(155,89,182,0.45); }
+    .badge-secret { background: linear-gradient(135deg, rgba(233,69,96,0.28) 0%, rgba(255,123,114,0.12) 100%); border: 1px solid rgba(233,69,96,0.45); }
+    .badge-human  { background: linear-gradient(135deg, rgba(243,156,18,0.28) 0%, rgba(255,166,87,0.12) 100%); border: 1px solid rgba(243,156,18,0.45); }
+    .badge-prompt { background: linear-gradient(135deg, rgba(46,204,113,0.28) 0%, rgba(63,185,80,0.12) 100%); border: 1px solid rgba(46,204,113,0.45); }
+    .badge-supply { background: linear-gradient(135deg, rgba(52,152,219,0.28) 0%, rgba(26,188,156,0.12) 100%); border: 1px solid rgba(52,152,219,0.45); }
+    .badge-mcp    { background: linear-gradient(135deg, rgba(155,89,182,0.28) 0%, rgba(210,168,255,0.12) 100%); border: 1px solid rgba(155,89,182,0.45); }
+    .badge-audit  { background: linear-gradient(135deg, rgba(26,188,156,0.28) 0%, rgba(88,166,255,0.12) 100%); border: 1px solid rgba(26,188,156,0.45); }
+    .badge-gov    { background: linear-gradient(135deg, rgba(236,240,241,0.14) 0%, rgba(189,195,199,0.07) 100%); border: 1px solid rgba(236,240,241,0.28); }
+
+    /* SDD Phase badges */
+    .badge-define   { background: linear-gradient(135deg, rgba(88,166,255,0.28) 0%, rgba(26,188,156,0.12) 100%); border: 1px solid rgba(88,166,255,0.45); }
+    .badge-decompose{ background: linear-gradient(135deg, rgba(26,188,156,0.28) 0%, rgba(88,166,255,0.12) 100%); border: 1px solid rgba(26,188,156,0.45); }
+    .badge-constrain{ background: linear-gradient(135deg, rgba(210,168,255,0.28) 0%, rgba(155,89,182,0.12) 100%); border: 1px solid rgba(210,168,255,0.45); }
+    .badge-generate { background: linear-gradient(135deg, rgba(63,185,80,0.28) 0%, rgba(88,166,255,0.12) 100%); border: 1px solid rgba(63,185,80,0.45); }
+    .badge-verify   { background: linear-gradient(135deg, rgba(255,166,87,0.28) 0%, rgba(255,123,114,0.12) 100%); border: 1px solid rgba(255,166,87,0.45); }
+
+    .severity-badge { display: inline-block; padding: 0.1em 0.5em; border-radius: 4px; font-weight: 700; font-size: 0.55em; text-transform: uppercase; letter-spacing: 0.08em; }
+    .sev-critical { background: rgba(255,123,114,0.25); border: 1px solid rgba(255,123,114,0.5); color: #ff7b72; }
+    .sev-high     { background: rgba(255,166,87,0.25); border: 1px solid rgba(255,166,87,0.5); color: #ffa657; }
+    .sev-medium   { background: rgba(210,168,255,0.25); border: 1px solid rgba(210,168,255,0.5); color: #d2a8ff; }
+
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1em; font-size: 0.85em; }
+    .three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.8em; font-size: 0.75em; }
+
+    .reveal pre { font-size: 0.55em; width: 95%; margin: 0.5em auto; }
+    .reveal pre code { padding: 0.8em; border-radius: 6px; max-height: 450px; }
+
+    .cve-critical { color: #ff7b72; }
+    .cve-high { color: #ffa657; }
+    .cve-medium { color: #d2a8ff; }
+
+    .slide-nav-hint { position: fixed; bottom: 20px; right: 30px; font-size: 0.5em; color: rgba(255,255,255,0.3); }
+
+    /* Nested layer rings diagram */
+    .ring { border: 1px solid; border-radius: 12px; padding: 0.35em 0.5em; text-align: center; }
+    .ring .ring-label { font-size: 0.55em; font-weight: 600; margin-bottom: 0.2em; letter-spacing: 0.03em; }
+    .ring-1 { border-color: rgba(88,166,255,0.45); background: linear-gradient(145deg, rgba(88,166,255,0.1) 0%, rgba(26,188,156,0.04) 100%); }
+    .ring-1 .ring-label { color: #79c0ff; }
+    .ring-2 { border-color: rgba(121,192,255,0.4); background: linear-gradient(145deg, rgba(121,192,255,0.09) 0%, rgba(88,166,255,0.04) 100%); }
+    .ring-2 .ring-label { color: #a5d6ff; }
+    .ring-3 { border-color: rgba(63,185,80,0.45); background: linear-gradient(145deg, rgba(63,185,80,0.1) 0%, rgba(88,166,255,0.03) 100%); }
+    .ring-3 .ring-label { color: #56d364; }
+    .ring-4 { border-color: rgba(210,168,255,0.4); background: linear-gradient(145deg, rgba(210,168,255,0.1) 0%, rgba(255,123,114,0.03) 100%); }
+    .ring-4 .ring-label { color: #d2a8ff; }
+    .ring-5 { border-color: rgba(255,123,114,0.4); background: linear-gradient(145deg, rgba(255,123,114,0.1) 0%, rgba(255,166,87,0.04) 100%); }
+    .ring-5 .ring-label { color: #ff9490; }
+    .ring-6 { border-color: rgba(243,156,18,0.4); background: linear-gradient(145deg, rgba(243,156,18,0.1) 0%, rgba(255,123,114,0.04) 100%); }
+    .ring-6 .ring-label { color: #f0b429; }
+    .ring-core { border: 1px solid rgba(139,148,158,0.3); border-radius: 10px; padding: 0.4em; background: linear-gradient(145deg, rgba(139,148,158,0.1) 0%, rgba(88,166,255,0.04) 100%); font-size: 0.5em; color: #c9d1d9; line-height: 1.6; }
+
+    /* Sandbox layers diagram */
+    .sandbox-layer { border-radius: 10px; padding: 0.5em 0.7em; margin-bottom: 0; text-align: left; }
+    .sandbox-layer .sl-title { font-weight: 700; font-size: 0.8em; margin-bottom: 0.15em; }
+    .sandbox-layer .sl-detail { font-size: 0.6em; color: #8b949e; }
+    .sl-bwrap    { border: 1px solid rgba(88,166,255,0.3); background: linear-gradient(145deg, rgba(88,166,255,0.14) 0%, rgba(26,188,156,0.06) 100%); }
+    .sl-bwrap .sl-title { color: #79c0ff; }
+    .sl-seccomp  { border: 1px solid rgba(243,156,18,0.3); background: linear-gradient(145deg, rgba(243,156,18,0.14) 0%, rgba(255,166,87,0.06) 100%); }
+    .sl-seccomp .sl-title { color: #f0b429; }
+    .sl-landlock { border: 1px solid rgba(63,185,80,0.3); background: linear-gradient(145deg, rgba(63,185,80,0.14) 0%, rgba(88,166,255,0.06) 100%); }
+    .sl-landlock .sl-title { color: #56d364; }
+    .sl-agent    { border: 1px solid rgba(210,168,255,0.3); background: linear-gradient(145deg, rgba(210,168,255,0.14) 0%, rgba(255,123,114,0.05) 100%); text-align: center; }
+    .sl-agent .sl-title { color: #d2a8ff; }
+
+    /* Flow diagram */
+    .flow-diagram { display: flex; align-items: center; justify-content: center; gap: 0; flex-wrap: nowrap; }
+    .flow-node { border-radius: 8px; padding: 0.5em 0.7em; text-align: center; font-size: 0.65em; font-weight: 600; min-width: 100px; }
+    .flow-arrow { font-size: 1.2em; color: #484f58; padding: 0 0.2em; }
+    .flow-blocked { border: 1px solid rgba(255,123,114,0.35); background: linear-gradient(145deg, rgba(255,123,114,0.16) 0%, rgba(255,166,87,0.07) 100%); color: #ff9490; }
+    .flow-proxy   { border: 1px solid rgba(63,185,80,0.35); background: linear-gradient(145deg, rgba(63,185,80,0.16) 0%, rgba(88,166,255,0.07) 100%); color: #56d364; min-width: 160px; }
+    .flow-neutral { border: 1px solid rgba(88,166,255,0.35); background: linear-gradient(145deg, rgba(88,166,255,0.16) 0%, rgba(26,188,156,0.07) 100%); color: #79c0ff; }
+    .flow-checks { display: flex; flex-direction: column; gap: 0.25em; font-size: 0.6em; text-align: left; color: #c9d1d9; margin-top: 0.5em; }
+    .flow-checks span { padding: 0.2em 0.5em; background: linear-gradient(145deg, rgba(63,185,80,0.12) 0%, rgba(88,166,255,0.05) 100%); border: 1px solid rgba(63,185,80,0.2); border-radius: 4px; }
+
+    /* Env tree diagram */
+    .env-tree { text-align: left; font-size: 0.7em; }
+    .env-tree .env-root { color: #ff7b72; font-weight: 700; font-size: 1.05em; margin-bottom: 0.4em; border-bottom: 1px solid rgba(255,123,114,0.3); padding-bottom: 0.3em; }
+    .env-tree .env-item { padding: 0.15em 0 0.15em 1.2em; border-left: 2px solid rgba(255,123,114,0.25); color: #c9d1d9; display: flex; align-items: center; gap: 0.5em; }
+    .env-tree .env-item:last-child { border-left-color: transparent; }
+    .env-tree .env-icon { font-size: 0.9em; width: 1.2em; text-align: center; }
+    .env-tree .env-key { color: #ffa657; font-family: 'Courier New', monospace; font-size: 0.9em; }
+    .env-tree .env-desc { color: #8b949e; font-size: 0.85em; }
+
+    /* ===== STAT CARD VARIANTS ===== */
+
+    /* Gradient card backgrounds */
+    .sc-red-org  { background: linear-gradient(145deg, rgba(255,123,114,0.30) 0%, rgba(255,166,87,0.12) 55%, transparent 100%); }
+    .sc-org-yel  { background: linear-gradient(145deg, rgba(255,166,87,0.30) 0%, rgba(227,179,65,0.12) 55%, transparent 100%); }
+    .sc-pur-pnk  { background: linear-gradient(145deg, rgba(210,168,255,0.30) 0%, rgba(255,123,114,0.10) 55%, transparent 100%); }
+    .sc-red-pur  { background: linear-gradient(145deg, rgba(255,107,107,0.30) 0%, rgba(210,168,255,0.13) 55%, transparent 100%); }
+    .sc-blu-tel  { background: linear-gradient(145deg, rgba(88,166,255,0.30) 0%, rgba(26,188,156,0.12) 55%, transparent 100%); }
+    .sc-grn-blu  { background: linear-gradient(145deg, rgba(63,185,80,0.30) 0%, rgba(88,166,255,0.11) 55%, transparent 100%); }
+
+    /* Gradient number text */
+    .sn-red-org  { background: linear-gradient(135deg, #ff7b72 30%, #ffa657 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .sn-org-yel  { background: linear-gradient(135deg, #ffa657 30%, #e3b341 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .sn-pur-pnk  { background: linear-gradient(135deg, #d2a8ff 30%, #ff7b72 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .sn-red-pur  { background: linear-gradient(135deg, #ff6b6b 30%, #d2a8ff 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .sn-blu-tel  { background: linear-gradient(135deg, #58a6ff 30%, #1abc9c 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .sn-grn-blu  { background: linear-gradient(135deg, #3fb950 30%, #58a6ff 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+
+    /* Generic gradient info card — pairs with .sc-* color classes */
+    .info-card { border-radius: 10px; padding: 0.72em 0.88em; border: 1px solid rgba(255,255,255,0.09); font-size: 0.75em; line-height: 1.5; color: #8b949e; }
+    .info-card strong { display: block; font-size: 0.78em; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; margin-bottom: 0.35em; }
+
+    /* Incident Timeline */
+    .timeline { display: grid; grid-template-columns: 5em 16px 1fr; row-gap: 0; font-size: 0.74em; margin-top: 0.5em; }
+    .tl-date { text-align: right; padding-right: 0.7em; padding-top: 0.2em; font-weight: 700; font-size: 0.88em; line-height: 1.3; white-space: nowrap; }
+    .tl-spine { display: flex; flex-direction: column; align-items: center; }
+    .tl-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; margin-top: 0.24em; }
+    .tl-connector { width: 2px; flex: 1; min-height: 0.6em; }
+    .tl-content { padding: 0 0 0.65em 0.75em; }
+    .tl-title { font-weight: 600; color: #e6edf3; line-height: 1.3; }
+    .tl-impact { font-size: 0.82em; color: #8b949e; margin-top: 0.08em; }
+
+    /* Decision-tree hover tooltips */
+    .wtu-tip { cursor: help; }
+    .wtu-tip .wtu-tt { opacity: 0; pointer-events: none; transition: opacity 0.18s ease; }
+    .wtu-tip:hover .wtu-tt { opacity: 1; }
+
+    /* KPI Dashboard Tiles */
+    .stat-kpi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.55em; margin-top: 0.4em; }
+    .stat-kpi-v5 {
+      border-radius: 10px;
+      padding: 0.75em 0.65em 0.65em;
+      border: 1px solid rgba(255,255,255,0.07);
+    }
+    .stat-kpi-v5 .kpi-label { font-size: 0.4em; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 700; margin-bottom: 0.3em; display: block; }
+    .stat-kpi-v5 .sn { display: block; font-size: 2.1em; font-weight: 700; line-height: 1; }
+    .stat-kpi-v5 .sd { display: block; font-size: 0.48em; color: #8b949e; margin-top: 0.45em; line-height: 1.4; }
+
+    /* Framework SDLC diagrams */
+    .sdlc-tagline { font-size: 0.65em; color: #8b949e; text-align: center; margin-top: 0.6em; }
+    .four-col { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 0.7em; font-size: 0.72em; }
+
+  </style>
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+      <!-- ========================== 1. TITLE ========================== -->
+      <section class="center-slide">
+        <h1 style="font-size:1.6em;">Spec-Driven Development</h1>
+        <h3 style="color:#8b949e; font-weight:400;">A Practitioner's Reference for AI Coding Agents</h3>
+        <p style="font-size:0.6em; color:#8b949e; margin-top:2em;">
+          Claude Code &bull; Cursor &bull; GitHub Copilot &bull; Kiro
+        </p>
+        <p style="font-size:0.5em; color:#484f58; margin-top:1em;">
+          &larr; &rarr; top-level slides &nbsp;&nbsp;|&nbsp;&nbsp; &uarr; &darr; deep dives &nbsp;&nbsp;|&nbsp;&nbsp; ESC overview
+        </p>
+      </section>
+
+      <!-- ========================== 2. THE PROBLEM ========================== -->
+      <section>
+        <!-- 2a: The Problem in Numbers -->
+        <section>
+          <h2>The Problem in Numbers</h2>
+          <div class="stat-kpi-grid">
+            <div class="stat-kpi-v5 sc-red-org"><span class="kpi-label sn-red-org">AI vs Human Code</span><span class="sn sn-red-org">1.7x</span><span class="sd">more issues in AI code vs human<br>CodeRabbit, Dec 2025</span></div>
+            <div class="stat-kpi-v5 sc-org-yel"><span class="kpi-label sn-org-yel">Security Flaws</span><span class="sn sn-org-yel">45%</span><span class="sd">AI code contains security flaws<br>Veracode, 2026</span></div>
+            <div class="stat-kpi-v5 sc-pur-pnk"><span class="kpi-label sn-pur-pnk">Production Issues</span><span class="sn sn-pur-pnk">110K+</span><span class="sd">AI issues in production repos<br>arXiv, Mar 2026</span></div>
+            <div class="stat-kpi-v5 sc-red-pur"><span class="kpi-label sn-red-pur">Developer Trust</span><span class="sn sn-red-pur">46%</span><span class="sd">developers distrust AI output<br>Industry surveys</span></div>
+            <div class="stat-kpi-v5 sc-blu-tel"><span class="kpi-label sn-blu-tel">Hallucinated Deps</span><span class="sn sn-blu-tel">20%</span><span class="sd">hallucinated package refs<br>Slopsquatting risk</span></div>
+            <div class="stat-kpi-v5 sc-grn-blu"><span class="kpi-label sn-grn-blu">Bug Density</span><span class="sn sn-grn-blu">35-40%</span><span class="sd">bug density increase<br>Without quality guardrails</span></div>
+          </div>
+          <p style="font-size:0.55em; color:#8b949e; margin-top:0.8em;">&darr; for root causes</p>
+        </section>
+
+        <!-- 2b: Root Causes -->
+        <section>
+          <h3>Root Causes</h3>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.6em;margin-top:0.5em;">
+            <div class="info-card sc-red-org"><strong class="sn-red-org">Context Window Limits</strong>AI loses track of requirements across sessions. Later sections get less attention.</div>
+            <div class="info-card sc-red-pur"><strong class="sn-red-pur">Non-Determinism</strong>Same prompt, different outputs. No structural anchor means no reproducibility.</div>
+            <div class="info-card sc-org-yel"><strong class="sn-org-yel">Instruction-Data Confusion</strong>AI cannot distinguish intent from content. Specs in context window compete with code.</div>
+            <div class="info-card sc-pur-pnk"><strong class="sn-pur-pnk">Architectural Drift</strong>Each generation session drifts independently. No cross-session coherence.</div>
+          </div>
+        </section>
+
+        <!-- 2c: The Vibe Coding Problem -->
+        <section>
+          <h3>The Vibe Coding Problem</h3>
+          <div class="warn-box" style="margin-top:0.8em;">
+            <strong>Vibe Coding</strong> (Andrej Karpathy, Feb 2025): &ldquo;You fully give in to the vibes, embrace exponentials, and forget that the code even exists.&rdquo; This works for prototypes but fails catastrophically for production systems where reliability, security, and maintainability matter.
+          </div>
+          <div class="stat-box" style="margin-top:1em;">
+            <strong>The SDD thesis:</strong> SDD inverts the relationship &mdash; the spec is maintained, code is generated. Instead of trying to control AI output through better prompts, we control it through better specifications. The spec becomes the source of truth; code is a disposable artifact.
+          </div>
+          <div class="info-box" style="margin-top:0.8em;font-style:italic;">
+            &ldquo;With the compressed code cycles, there should be plenty of time to communicate. If it&rsquo;s not happening, it&rsquo;s because nobody wants to communicate.&rdquo; &mdash; <strong style="font-style:normal;">Vaughn Vernon</strong>
+          </div>
+        </section>
+      </section>
+
+      <!-- ========================== 3. SDD LIFECYCLE MODEL ========================== -->
+      <section>
+        <!-- 3a: Flow Diagram -->
+        <section class="center-slide">
+          <h2>SDD Lifecycle Model</h2>
+          <div class="flow-diagram">
+            <div class="flow-node" style="border:1px solid rgba(88,166,255,0.45);background:linear-gradient(145deg,rgba(88,166,255,0.18) 0%,rgba(26,188,156,0.06) 100%);color:#79c0ff;">1. DEFINE</div>
+            <div class="flow-arrow">&rarr;</div>
+            <div class="flow-node" style="border:1px solid rgba(26,188,156,0.45);background:linear-gradient(145deg,rgba(26,188,156,0.18) 0%,rgba(88,166,255,0.06) 100%);color:#2ee8c8;">2. DECOMPOSE</div>
+            <div class="flow-arrow">&rarr;</div>
+            <div class="flow-node" style="border:1px solid rgba(210,168,255,0.45);background:linear-gradient(145deg,rgba(210,168,255,0.18) 0%,rgba(155,89,182,0.06) 100%);color:#d2a8ff;">3. CONSTRAIN</div>
+            <div class="flow-arrow">&rarr;</div>
+            <div class="flow-node" style="border:1px solid rgba(63,185,80,0.45);background:linear-gradient(145deg,rgba(63,185,80,0.18) 0%,rgba(88,166,255,0.06) 100%);color:#56d364;">4. GENERATE</div>
+            <div class="flow-arrow">&rarr;</div>
+            <div class="flow-node" style="border:1px solid rgba(255,166,87,0.45);background:linear-gradient(145deg,rgba(255,166,87,0.18) 0%,rgba(255,123,114,0.06) 100%);color:#ffa657;">5. VERIFY</div>
+          </div>
+          <div style="text-align:center;font-size:0.6em;color:#8b949e;margin-top:1em;">
+            <span style="color:#ff7b72;">VERIFY &rarr; DEFINE</span> spec drift &nbsp;&bull;&nbsp;
+            <span style="color:#ffa657;">VERIFY &rarr; DECOMPOSE</span> structural gap &nbsp;&bull;&nbsp;
+            <span style="color:#d2a8ff;">VERIFY &rarr; CONSTRAIN</span> rule violation
+          </div>
+          <p style="font-size:0.7em;margin-top:1.2em;">The spec is the maintained artifact. Code is generated from it. When verification reveals a gap, fix the spec and regenerate.</p>
+        </section>
+
+        <!-- 3b: Phase Summary Matrix -->
+        <section>
+          <h3>Phase Summary Matrix</h3>
+          <table>
+            <thead><tr><th>Phase</th><th>Question</th><th>Key Output</th><th>Common Failure</th></tr></thead>
+            <tbody>
+              <tr><td><span class="layer-badge badge-define">1. Define</span></td><td>What and why?</td><td>Requirements, success criteria</td><td>Vague or missing spec</td></tr>
+              <tr><td><span class="layer-badge badge-decompose">2. Decompose</span></td><td>How to structure?</td><td>Interfaces, data models, tasks</td><td>Monolithic generation</td></tr>
+              <tr><td><span class="layer-badge badge-constrain">3. Constrain</span></td><td>What are the boundaries?</td><td>Standards, rules, budgets</td><td>No guardrails</td></tr>
+              <tr><td><span class="layer-badge badge-generate">4. Generate</span></td><td>Build it</td><td>Code from spec</td><td>Poor context engineering</td></tr>
+              <tr><td><span class="layer-badge badge-verify">5. Verify</span></td><td>Does it match?</td><td>Test results, compliance</td><td>Skipping verification</td></tr>
+            </tbody>
+          </table>
+        </section>
+      </section>
+
+      <!-- ========================== 4. PHASE 1: DEFINE ========================== -->
+      <section>
+        <!-- 4a: Define Overview -->
+        <section>
+          <span class="layer-badge badge-define">PHASE 1</span>
+          <h2>Define: Requirements</h2>
+          <p style="font-size:0.8em;">Before any AI prompt, write down <em>what</em> you want and <em>why</em>. Every requirement must be testable.</p>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.6em;margin-top:0.8em;">
+            <div class="info-card sc-blu-tel"><strong class="sn-blu-tel">Goal Statement</strong>One sentence: what does the feature do and why does it exist? This anchors all downstream generation.</div>
+            <div class="info-card sc-grn-blu"><strong class="sn-grn-blu">Functional Requirements</strong>Numbered list of behaviors. Each must be independently testable. Use &ldquo;shall&rdquo; language.</div>
+            <div class="info-card sc-pur-pnk"><strong class="sn-pur-pnk">Success Criteria</strong>How do you know it works? Quantitative where possible: latency &lt; 200ms, error rate &lt; 0.1%.</div>
+            <div class="info-card sc-org-yel"><strong class="sn-org-yel">Out of Scope</strong>Explicitly state what the feature does NOT do. Prevents AI from gold-plating or drifting into adjacent features.</div>
+          </div>
+        </section>
+
+        <!-- 4b: Feature Spec Template -->
+        <section>
+          <h3>Feature Spec Template</h3>
+          <pre><code class="language-markdown" data-trim>
+# Feature: [Name]
+
+## Goal
+[One sentence: what and why]
+
+## Functional Requirements
+1. The system shall [behavior 1]
+2. The system shall [behavior 2]
+3. The system shall [behavior 3]
+
+## Non-Functional Requirements
+- Latency: p99 < [target]ms
+- Error rate: < [target]%
+- Compatibility: [browsers/platforms]
+
+## Success Criteria
+- [ ] All functional requirements pass automated tests
+- [ ] Performance meets NFR targets
+- [ ] No new lint/type errors introduced
+
+## Out of Scope
+- [Feature X] (deferred to next sprint)
+- [Integration Y] (separate spec)
+
+## Open Questions
+- [?] [Unresolved decision — block generation until answered]
+          </code></pre>
+        </section>
+      </section>
+
+      <!-- ========================== 5. PHASE 2: DECOMPOSE ========================== -->
+      <section>
+        <!-- 5a: Decompose Overview -->
+        <section>
+          <span class="layer-badge badge-decompose">PHASE 2</span>
+          <h2>Decompose: Design</h2>
+          <p style="font-size:0.8em;">Break the feature into components with explicit interfaces. AI generates best when scope is narrow and contracts are clear.</p>
+          <div class="three-col" style="margin-top:0.8em;">
+            <div class="info-card sc-blu-tel"><strong class="sn-blu-tel">Interface Contracts</strong>Define inputs, outputs, and error cases for each component boundary. TypeScript types, API schemas, or function signatures.</div>
+            <div class="info-card sc-grn-blu"><strong class="sn-grn-blu">Data Models</strong>Entity relationships, state machines, and data flow. Generation sessions need a shared structural anchor.</div>
+            <div class="info-card sc-pur-pnk"><strong class="sn-pur-pnk">Task Breakdown</strong>Each generation task should be scoped to a single component or concern. One task = one context window.</div>
+          </div>
+        </section>
+
+        <!-- 5b: Why Decomposition Matters -->
+        <section>
+          <h3>Why Decomposition Matters</h3>
+          <table>
+            <thead><tr><th>Approach</th><th>Best For</th><th>Output</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Monolithic prompt</strong></td><td>Tiny scripts, one-off tasks</td><td>Single file, no structure guarantees</td></tr>
+              <tr><td><strong>Component-level tasks</strong></td><td>Features with 2-5 modules</td><td>Each module fits in context, interfaces enforced</td></tr>
+              <tr><td><strong>Micro-task decomposition</strong></td><td>Complex systems, teams</td><td>Each task &lt; 2K tokens of spec, highly reproducible</td></tr>
+            </tbody>
+          </table>
+          <div class="good-box" style="margin-top:0.8em;">
+            <strong>Rule of thumb:</strong> If your spec exceeds 2,000 tokens, decompose further. AI attention degrades significantly beyond this threshold.
+          </div>
+          <div class="warn-box" style="margin-top:0.5em;">
+            <strong>Monolithic generation</strong> is the #1 cause of architectural drift. Each session independently invents structure instead of following a shared design.
+          </div>
+        </section>
+      </section>
+
+      <!-- ========================== 6. PHASE 3: CONSTRAIN ========================== -->
+      <section>
+        <!-- 6a: Constrain Overview -->
+        <section>
+          <span class="layer-badge badge-constrain">PHASE 3</span>
+          <h2>Constrain: Guardrails</h2>
+          <p style="font-size:0.8em;">Define what AI can and cannot do. Without explicit constraints, agents take the path of least resistance.</p>
+          <h4 style="color:#a5d6ff; font-size:0.8em; margin-top:0.8em;">Three-Tier Permission Model</h4>
+          <table>
+            <thead><tr><th>Tier</th><th>Policy</th><th>Examples</th></tr></thead>
+            <tbody>
+              <tr><td style="color:#56d364; font-weight:700;">Always</td><td>AI can do without asking</td><td>Run tests, format code, read files</td></tr>
+              <tr><td style="color:#e3b341; font-weight:700;">Ask First</td><td>Requires human approval</td><td>Install packages, modify configs, delete files</td></tr>
+              <tr><td style="color:#ff7b72; font-weight:700;">Never</td><td>Hard stop, denied</td><td>Push to main, run sudo, access .env</td></tr>
+            </tbody>
+          </table>
+          <div class="warn-box" style="margin-top:0.5em;">
+            <strong>Without &ldquo;Never&rdquo; rules,</strong> AI agents will eventually execute destructive operations. Default-allow is the root cause of most agent incidents.
+          </div>
+        </section>
+
+        <!-- 6b: Tool-Specific Constraints -->
+        <section>
+          <h3>Tool-Specific Constraints</h3>
+          <table>
+            <thead><tr><th>Mechanism</th><th>Claude Code</th><th>Cursor</th><th>Copilot</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Project instructions</strong></td><td>CLAUDE.md</td><td>.cursorrules</td><td>copilot-instructions.md</td></tr>
+              <tr><td><strong>Deny rules</strong></td><td>settings.json</td><td>&mdash;</td><td>&mdash;</td></tr>
+              <tr><td><strong>File protection</strong></td><td>.aiignore</td><td>.cursorignore</td><td>&mdash;</td></tr>
+              <tr><td><strong>Plan mode</strong></td><td>Shift+Tab</td><td>Plan mode</td><td>Plan mode</td></tr>
+            </tbody>
+          </table>
+          <div class="good-box" style="margin-top:0.8em;">
+            <strong>Best practice:</strong> Every project should have a project instructions file checked into version control. This is your persistent constraint layer — it survives across sessions and team members.
+          </div>
+        </section>
+      </section>
+
+      <!-- ========================== 7. PHASE 4: GENERATE ========================== -->
+      <section>
+        <!-- 7a: Generate Overview -->
+        <section>
+          <span class="layer-badge badge-generate">PHASE 4</span>
+          <h2>Generate: Context Engineering</h2>
+          <p style="font-size:0.8em;">Generation quality is a function of context quality. Layer your context from global to task-specific.</p>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.6em;margin-top:0.8em;">
+            <div class="info-card sc-blu-tel"><strong class="sn-blu-tel">Global Context (CLAUDE.md)</strong>Project-wide standards, patterns, and constraints. Loaded automatically every session.</div>
+            <div class="info-card sc-grn-blu"><strong class="sn-grn-blu">Project Context (Spec Files)</strong>Feature specs, interface contracts, data models. Referenced explicitly per task.</div>
+            <div class="info-card sc-pur-pnk"><strong class="sn-pur-pnk">Session Context (Conversation)</strong>Current discussion thread. Degrades as conversation grows. Keep sessions focused.</div>
+            <div class="info-card sc-org-yel"><strong class="sn-org-yel">Task Context (Current Prompt)</strong>The specific instruction for this generation. Include only what&rsquo;s needed for this one task.</div>
+          </div>
+        </section>
+
+        <!-- 7b: Tool-Specific Context -->
+        <section>
+          <h3>Tool-Specific Context Mechanisms</h3>
+          <table>
+            <thead><tr><th>Mechanism</th><th>Claude Code</th><th>Cursor</th><th>Copilot</th><th>Kiro</th></tr></thead>
+            <tbody>
+              <tr><td><strong>System instructions</strong></td><td>CLAUDE.md</td><td>.cursorrules</td><td>copilot-instructions.md</td><td>Built-in</td></tr>
+              <tr><td><strong>Plan mode</strong></td><td>Shift+Tab</td><td>Plan mode</td><td>Plan mode</td><td>Requirements</td></tr>
+              <tr><td><strong>File context</strong></td><td>@file</td><td>@file</td><td>@workspace</td><td>Auto</td></tr>
+              <tr><td><strong>Memory</strong></td><td>Memory files</td><td>.cursor/</td><td>&mdash;</td><td>Specs persist</td></tr>
+            </tbody>
+          </table>
+          <div class="stat-box" style="margin-top:0.8em;">
+            <strong>Context engineering</strong> is the skill of assembling the right information at the right layer. Poor context &rarr; poor generation, regardless of model quality.
+          </div>
+        </section>
+      </section>
+
+      <!-- ========================== 8. PHASE 5: VERIFY ========================== -->
+      <section>
+        <!-- 8a: Verify Overview -->
+        <section>
+          <span class="layer-badge badge-verify">PHASE 5</span>
+          <h2>Verify: Validation</h2>
+          <p style="font-size:0.8em;">Every generation must be verified against the spec before merging. Trust but verify &mdash; or better, don&rsquo;t trust at all.</p>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.6em;margin-top:0.8em;">
+            <div class="info-card sc-blu-tel"><strong class="sn-blu-tel">Automated Tests</strong>Unit, integration, and E2E tests written from spec before code generation. Tests are the executable spec.</div>
+            <div class="info-card sc-grn-blu"><strong class="sn-grn-blu">Spec-Compliance Check</strong>Systematically verify each requirement. Checklist-driven: every &ldquo;shall&rdquo; in the spec gets a pass/fail.</div>
+            <div class="info-card sc-pur-pnk"><strong class="sn-pur-pnk">LLM-as-Judge</strong>Use a separate AI session to review generated code against the spec. Different context = different blind spots.</div>
+            <div class="info-card sc-org-yel"><strong class="sn-org-yel">Human Review</strong>Final gate. Focus on architectural decisions, security implications, and spec ambiguities the AI may have resolved incorrectly.</div>
+          </div>
+        </section>
+
+        <!-- 8b: Feedback Loop -->
+        <section>
+          <h3>Feedback Loop</h3>
+          <table>
+            <thead><tr><th>Failure Type</th><th>Routes To</th><th>Action</th></tr></thead>
+            <tbody>
+              <tr><td>Test failure</td><td>Constrain or Define</td><td>Refine constraints or requirements</td></tr>
+              <tr><td>Architecture drift</td><td>Decompose</td><td>Revisit component boundaries</td></tr>
+              <tr><td>Spec ambiguity</td><td>Define</td><td>Add clarity, resolve markers</td></tr>
+              <tr><td>Performance miss</td><td>Constrain</td><td>Tighten budgets</td></tr>
+            </tbody>
+          </table>
+          <div class="good-box" style="margin-top:0.8em;">
+            <strong>The Harness Feedback Loop:</strong> Every verification failure strengthens the harness. A test failure reveals a missing constraint; a constraint gets added; all future generations benefit. The system gets smarter with each cycle.
+          </div>
+        </section>
+      </section>
+
+      <!-- ========================== 9. SDD AND THE SDLC ========================== -->
+      <section>
+        <!-- 9a: Core Shift -->
+        <section>
+          <h2>SDD Transforms the SDLC</h2>
+          <table>
+            <thead><tr><th>Aspect</th><th>Traditional</th><th>SDD</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Source of truth</strong></td><td>Code</td><td>Specification</td></tr>
+              <tr><td><strong>Feedback timing</strong></td><td>End-of-phase gates</td><td>Continuous</td></tr>
+              <tr><td><strong>Spec lifespan</strong></td><td>Stale</td><td>Living</td></tr>
+              <tr><td><strong>Testing</strong></td><td>After code</td><td>Before code</td></tr>
+              <tr><td><strong>Drift detection</strong></td><td>Post-deployment</td><td>Build-time</td></tr>
+            </tbody>
+          </table>
+        </section>
+
+        <!-- 9b: Phase-by-Phase Transformation -->
+        <section>
+          <h3>Phase-by-Phase Transformation</h3>
+          <div class="two-col" style="font-size:0.95em;">
+            <div>
+              <div class="info-card sc-blu-tel" style="margin-bottom:0.4em;padding:0.5em 0.7em;"><strong class="sn-blu-tel" style="font-size:0.7em;">Requirements &rarr; SPECIFY</strong><span style="font-size:0.68em;">Feedback: clarification questions from AI</span></div>
+              <div class="info-card sc-grn-blu" style="margin-bottom:0.4em;padding:0.5em 0.7em;"><strong class="sn-grn-blu" style="font-size:0.7em;">Design &rarr; PLAN</strong><span style="font-size:0.68em;">Feedback: constitution gates</span></div>
+              <div class="info-card sc-pur-pnk" style="margin-bottom:0.4em;padding:0.5em 0.7em;"><strong class="sn-pur-pnk" style="font-size:0.7em;">Tasks &rarr; DECOMPOSE</strong><span style="font-size:0.68em;">Feedback: dependency validation</span></div>
+              <div class="info-card sc-org-yel" style="margin-bottom:0.4em;padding:0.5em 0.7em;"><strong class="sn-org-yel" style="font-size:0.7em;">Implementation &rarr; GENERATE</strong><span style="font-size:0.68em;">Feedback: drift detection</span></div>
+            </div>
+            <div>
+              <div class="info-card sc-red-org" style="margin-bottom:0.4em;padding:0.5em 0.7em;"><strong class="sn-red-org" style="font-size:0.7em;">Testing &rarr; VERIFY</strong><span style="font-size:0.68em;">Feedback: coverage gaps</span></div>
+              <div class="info-card sc-red-pur" style="margin-bottom:0.4em;padding:0.5em 0.7em;"><strong class="sn-red-pur" style="font-size:0.7em;">Deployment &rarr; RELEASE</strong><span style="font-size:0.68em;">Feedback: operational metrics</span></div>
+              <div class="info-card sc-blu-tel" style="margin-bottom:0.4em;padding:0.5em 0.7em;"><strong class="sn-blu-tel" style="font-size:0.7em;">Maintenance &rarr; EVOLVE</strong><span style="font-size:0.68em;">Feedback: harness strengthening</span></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 9c: The Harness Feedback Loop -->
+        <section>
+          <h3>The Harness Feedback Loop</h3>
+          <div class="good-box" style="margin-top:1em;">
+            <strong>Spec-to-implementation gap</strong> &rarr; strengthen validation. When generated code doesn&rsquo;t match the spec, add more specific constraints and test criteria to prevent recurrence.
+          </div>
+          <div class="good-box" style="margin-top:0.5em;">
+            <strong>Intent-to-specification gap</strong> &rarr; improve elicitation. When the spec itself was wrong, refine the Define phase templates and checklists to catch ambiguity earlier.
+          </div>
+          <div class="stat-box" style="margin-top:0.8em;">
+            <strong>Each gap strengthens the harness for ALL future work.</strong> Unlike code fixes that are local, harness improvements are global. A better spec template improves every feature. A better constraint set prevents entire categories of errors.
+          </div>
+        </section>
+      </section>
+
+      <!-- ========================== 10. SDD FRAMEWORKS ========================== -->
+      <section>
+        <!-- 10a: Framework Cards -->
+        <section>
+          <h2>SDD Frameworks</h2>
+          <div class="four-col" style="margin-top:0.8em;">
+            <div class="info-card sc-blu-tel"><strong class="sn-blu-tel">OpenSpec</strong>Lightweight, brownfield-first. Delta specs: ADDED / MODIFIED / REMOVED. 24+ tools. Propose &rarr; Apply &rarr; Archive.</div>
+            <div class="info-card sc-pur-pnk"><strong class="sn-pur-pnk">BMAD-METHOD</strong>Multi-agent personas. Agent-as-Code. 37K+ stars. Analysis &rarr; Planning &rarr; Solutioning &rarr; Implementation.</div>
+            <div class="info-card sc-grn-blu"><strong class="sn-grn-blu">Spec Kit</strong>Constitutional governance. Specify &rarr; Plan &rarr; Tasks &rarr; Implement. Enterprise-grade.</div>
+            <div class="info-card sc-org-yel"><strong class="sn-org-yel">Tessl</strong>Spec-as-source registry. Spec &rarr; Generate &rarr; Deploy. Managed versioning. Early-stage.</div>
+          </div>
+        </section>
+
+        <!-- 10b: Framework Comparison -->
+        <section>
+          <h3>Framework Comparison</h3>
+          <table>
+            <thead><tr><th>Aspect</th><th>Spec Kit</th><th>OpenSpec</th><th>BMAD</th><th>Tessl</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Best for</strong></td><td>Enterprise greenfield</td><td>Brownfield iteration</td><td>Complex multi-domain</td><td>Managed spec versioning</td></tr>
+              <tr><td><strong>Workflow</strong></td><td>Specify&rarr;Plan&rarr;Tasks&rarr;Impl</td><td>Propose&rarr;Apply&rarr;Archive</td><td>4-phase multi-agent</td><td>Spec&rarr;Generate&rarr;Deploy</td></tr>
+              <tr><td><strong>Governance</strong></td><td>Constitution (9 articles)</td><td>Per-change proposal</td><td>Agent-level roles</td><td>Registry governance</td></tr>
+              <tr><td><strong>Context efficiency</strong></td><td>Verbose</td><td>Minimal (delta-based)</td><td>Optimized (90% reduction)</td><td>Managed</td></tr>
+              <tr><td><strong>Open source</strong></td><td>Yes</td><td>Yes</td><td>Yes (MIT)</td><td>Partial</td></tr>
+            </tbody>
+          </table>
+        </section>
+
+        <!-- 10c: When to Use What (MECE decision tree) -->
+        <section>
+          <h3>When to Use What</h3>
+          <svg viewBox="0 0 880 255" style="width:94%;display:block;margin:0.6em auto 0;">
+            <defs>
+              <marker id="wtu-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M 0 1 L 8 5 L 0 9 z" fill="#484f58"/></marker>
+            </defs>
+
+            <!-- Decision nodes (dashed) -->
+            <rect x="15" y="20" width="175" height="50" rx="8" fill="rgba(139,148,158,0.06)" stroke="rgba(139,148,158,0.4)" stroke-width="1.3" stroke-dasharray="5,3"/>
+            <text x="102" y="42" text-anchor="middle" fill="#c9d1d9" font-size="12.5" font-weight="600" font-family="Outfit,sans-serif">Small scope /</text>
+            <text x="102" y="58" text-anchor="middle" fill="#c9d1d9" font-size="12.5" font-weight="600" font-family="Outfit,sans-serif">prototype?</text>
+
+            <rect x="265" y="20" width="185" height="50" rx="8" fill="rgba(139,148,158,0.06)" stroke="rgba(139,148,158,0.4)" stroke-width="1.3" stroke-dasharray="5,3"/>
+            <text x="357" y="50" text-anchor="middle" fill="#c9d1d9" font-size="12.5" font-weight="600" font-family="Outfit,sans-serif">Scoped changes?</text>
+
+            <rect x="525" y="20" width="175" height="50" rx="8" fill="rgba(139,148,158,0.06)" stroke="rgba(139,148,158,0.4)" stroke-width="1.3" stroke-dasharray="5,3"/>
+            <text x="612" y="42" text-anchor="middle" fill="#c9d1d9" font-size="12.5" font-weight="600" font-family="Outfit,sans-serif">Multi-domain /</text>
+            <text x="612" y="58" text-anchor="middle" fill="#c9d1d9" font-size="12.5" font-weight="600" font-family="Outfit,sans-serif">complex?</text>
+
+            <!-- NO horizontal connectors (with hover tooltips) -->
+            <g class="wtu-tip">
+              <rect x="190" y="28" width="73" height="24" fill="transparent"/>
+              <line x1="190" y1="45" x2="263" y2="45" stroke="#484f58" stroke-width="1.5" marker-end="url(#wtu-a)"/>
+              <text x="226" y="39" text-anchor="middle" fill="#ff7b72" font-size="9.5" font-weight="600" font-family="Outfit,sans-serif">NO</text>
+              <g class="wtu-tt">
+                <rect x="176" y="2" width="100" height="22" rx="4" fill="rgba(13,27,46,0.92)" stroke="rgba(255,123,114,0.35)" stroke-width="0.8"/>
+                <text x="226" y="17" text-anchor="middle" fill="#c9d1d9" font-size="8" font-family="Outfit,sans-serif">Needs structure</text>
+              </g>
+            </g>
+
+            <g class="wtu-tip">
+              <rect x="450" y="28" width="73" height="24" fill="transparent"/>
+              <line x1="450" y1="45" x2="523" y2="45" stroke="#484f58" stroke-width="1.5" marker-end="url(#wtu-a)"/>
+              <text x="486" y="39" text-anchor="middle" fill="#ff7b72" font-size="9.5" font-weight="600" font-family="Outfit,sans-serif">NO</text>
+              <g class="wtu-tt">
+                <rect x="406" y="2" width="160" height="22" rx="4" fill="rgba(13,27,46,0.92)" stroke="rgba(255,123,114,0.35)" stroke-width="0.8"/>
+                <text x="486" y="17" text-anchor="middle" fill="#c9d1d9" font-size="8" font-family="Outfit,sans-serif">Need full system-level specs</text>
+              </g>
+            </g>
+
+            <g class="wtu-tip">
+              <rect x="700" y="28" width="53" height="24" fill="transparent"/>
+              <line x1="700" y1="45" x2="753" y2="45" stroke="#484f58" stroke-width="1.5" marker-end="url(#wtu-a)"/>
+              <text x="726" y="39" text-anchor="middle" fill="#ff7b72" font-size="9.5" font-weight="600" font-family="Outfit,sans-serif">NO</text>
+              <g class="wtu-tt">
+                <rect x="636" y="2" width="180" height="22" rx="4" fill="rgba(13,27,46,0.92)" stroke="rgba(255,123,114,0.35)" stroke-width="0.8"/>
+                <text x="726" y="17" text-anchor="middle" fill="#c9d1d9" font-size="8" font-family="Outfit,sans-serif">One domain — govern, don't orchestrate</text>
+              </g>
+            </g>
+
+            <!-- YES vertical connectors (with hover tooltips) -->
+            <g class="wtu-tip">
+              <rect x="90" y="70" width="38" height="70" fill="transparent"/>
+              <line x1="102" y1="70" x2="102" y2="140" stroke="#484f58" stroke-width="1.5" marker-end="url(#wtu-a)"/>
+              <text x="116" y="110" fill="#3fb950" font-size="9.5" font-weight="600" font-family="Outfit,sans-serif">YES</text>
+              <g class="wtu-tt">
+                <rect x="28" y="92" width="160" height="22" rx="4" fill="rgba(13,27,46,0.92)" stroke="rgba(63,185,80,0.35)" stroke-width="0.8"/>
+                <text x="108" y="107" text-anchor="middle" fill="#c9d1d9" font-size="8" font-family="Outfit,sans-serif">No framework overhead needed</text>
+              </g>
+            </g>
+
+            <g class="wtu-tip">
+              <rect x="345" y="70" width="38" height="70" fill="transparent"/>
+              <line x1="357" y1="70" x2="357" y2="140" stroke="#484f58" stroke-width="1.5" marker-end="url(#wtu-a)"/>
+              <text x="371" y="110" fill="#3fb950" font-size="9.5" font-weight="600" font-family="Outfit,sans-serif">YES</text>
+              <g class="wtu-tt">
+                <rect x="270" y="92" width="175" height="22" rx="4" fill="rgba(13,27,46,0.92)" stroke="rgba(63,185,80,0.35)" stroke-width="0.8"/>
+                <text x="357" y="107" text-anchor="middle" fill="#c9d1d9" font-size="8" font-family="Outfit,sans-serif">Spec only what changes (deltas)</text>
+              </g>
+            </g>
+
+            <g class="wtu-tip">
+              <rect x="600" y="70" width="38" height="70" fill="transparent"/>
+              <line x1="612" y1="70" x2="612" y2="140" stroke="#484f58" stroke-width="1.5" marker-end="url(#wtu-a)"/>
+              <text x="626" y="110" fill="#3fb950" font-size="9.5" font-weight="600" font-family="Outfit,sans-serif">YES</text>
+              <g class="wtu-tt">
+                <rect x="530" y="92" width="165" height="22" rx="4" fill="rgba(13,27,46,0.92)" stroke="rgba(63,185,80,0.35)" stroke-width="0.8"/>
+                <text x="612" y="107" text-anchor="middle" fill="#c9d1d9" font-size="8" font-family="Outfit,sans-serif">Needs cross-domain agents</text>
+              </g>
+            </g>
+
+            <!-- Terminal: Direct prompting (gray) -->
+            <rect x="27" y="142" width="150" height="52" rx="10" fill="rgba(139,148,158,0.1)" stroke="rgba(139,148,158,0.3)" stroke-width="1.5"/>
+            <text x="102" y="163" text-anchor="middle" fill="#8b949e" font-size="13" font-weight="700" font-family="Outfit,sans-serif">Direct prompting</text>
+            <text x="102" y="180" text-anchor="middle" fill="#484f58" font-size="9" font-family="Outfit,sans-serif">add structure later</text>
+
+            <!-- Terminal: OpenSpec (blue) -->
+            <rect x="282" y="142" width="150" height="52" rx="10" fill="rgba(88,166,255,0.1)" stroke="rgba(88,166,255,0.3)" stroke-width="1.5"/>
+            <text x="357" y="163" text-anchor="middle" fill="#79c0ff" font-size="13" font-weight="700" font-family="Outfit,sans-serif">OpenSpec</text>
+            <text x="357" y="180" text-anchor="middle" fill="#484f58" font-size="9" font-family="Outfit,sans-serif">delta specs, brownfield-first</text>
+
+            <!-- Terminal: BMAD (purple) -->
+            <rect x="537" y="142" width="150" height="52" rx="10" fill="rgba(210,168,255,0.1)" stroke="rgba(210,168,255,0.3)" stroke-width="1.5"/>
+            <text x="612" y="163" text-anchor="middle" fill="#d2a8ff" font-size="13" font-weight="700" font-family="Outfit,sans-serif">BMAD</text>
+            <text x="612" y="180" text-anchor="middle" fill="#484f58" font-size="9" font-family="Outfit,sans-serif">agent persona per domain</text>
+
+            <!-- Terminal: Spec Kit (green) — default at end of NO chain -->
+            <rect x="755" y="20" width="115" height="50" rx="10" fill="rgba(63,185,80,0.1)" stroke="rgba(63,185,80,0.3)" stroke-width="1.5"/>
+            <text x="812" y="42" text-anchor="middle" fill="#56d364" font-size="13" font-weight="700" font-family="Outfit,sans-serif">Spec Kit</text>
+            <text x="812" y="58" text-anchor="middle" fill="#484f58" font-size="9" font-family="Outfit,sans-serif">full 0-to-1 lifecycle</text>
+
+            <!-- Cross-cutting separator -->
+            <line x1="40" y1="218" x2="840" y2="218" stroke="rgba(139,148,158,0.15)" stroke-width="1" stroke-dasharray="3,4"/>
+            <text x="440" y="214" text-anchor="middle" fill="#484f58" font-size="9" font-style="italic" font-family="Outfit,sans-serif">cross-cutting &mdash; layer on top of any choice above</text>
+
+            <!-- Cross-cutting: Enterprise governance -->
+            <rect x="100" y="226" width="280" height="26" rx="6" fill="rgba(63,185,80,0.08)" stroke="rgba(63,185,80,0.2)" stroke-width="1"/>
+            <text x="115" y="243" fill="#56d364" font-size="10" font-weight="600" font-family="Outfit,sans-serif">+ Enterprise governance</text>
+            <text x="265" y="243" fill="#484f58" font-size="10" font-family="Outfit,sans-serif">&rarr; add Spec Kit constitution</text>
+
+            <!-- Cross-cutting: Centralized versioning -->
+            <rect x="500" y="226" width="280" height="26" rx="6" fill="rgba(255,166,87,0.08)" stroke="rgba(255,166,87,0.2)" stroke-width="1"/>
+            <text x="515" y="243" fill="#ffa657" font-size="10" font-weight="600" font-family="Outfit,sans-serif">+ Centralized versioning</text>
+            <text x="665" y="243" fill="#484f58" font-size="10" font-family="Outfit,sans-serif">&rarr; add Tessl registry</text>
+          </svg>
+        </section>
+
+        <!-- 10d: OpenSpec SDLC -->
+        <section>
+          <h3 style="background-image:linear-gradient(120deg,#58a6ff 0%,#1abc9c 100%) !important;">OpenSpec SDLC</h3>
+          <svg viewBox="0 40 880 140" style="width:92%;display:block;margin:0.4em auto 0;">
+            <defs>
+              <marker id="os-m" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#58a6ff"/></marker>
+              <marker id="os-c" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M 0 1 L 8 5 L 0 9 z" fill="#58a6ff" opacity="0.5"/></marker>
+            </defs>
+            <!-- Connectors from circle edge to circle edge -->
+            <line x1="185" y1="120" x2="392" y2="120" stroke="rgba(88,166,255,0.35)" stroke-width="2.5" marker-end="url(#os-c)"/>
+            <line x1="485" y1="120" x2="692" y2="120" stroke="rgba(88,166,255,0.35)" stroke-width="2.5" marker-end="url(#os-c)"/>
+            <!-- Phase 1: Propose -->
+            <circle cx="109" cy="67" r="16" fill="none" stroke="rgba(88,166,255,0.55)" stroke-width="1.3"/>
+            <text x="109" y="67" text-anchor="middle" dominant-baseline="central" fill="#8b949e" font-size="9" font-family="Outfit,sans-serif">Refine</text>
+            <circle cx="171" cy="67" r="16" fill="none" stroke="rgba(88,166,255,0.55)" stroke-width="1.3"/>
+            <text x="171" y="67" text-anchor="middle" dominant-baseline="central" fill="#8b949e" font-size="9" font-family="Outfit,sans-serif">Review</text>
+            <circle cx="140" cy="120" r="45" fill="none" stroke="rgba(88,166,255,0.15)" stroke-width="1.5"/>
+            <path d="M 140 75 A 45 45 0 1 1 132 76" fill="none" stroke="#58a6ff" stroke-width="2.5" stroke-linecap="round" marker-end="url(#os-m)" opacity="0.85"/>
+            <text x="140" y="120" text-anchor="middle" dominant-baseline="central" fill="#79c0ff" font-size="14" font-weight="600" font-family="Outfit,sans-serif">Propose</text>
+            <!-- Phase 2: Apply -->
+            <circle cx="409" cy="67" r="16" fill="none" stroke="rgba(88,166,255,0.55)" stroke-width="1.3"/>
+            <text x="409" y="67" text-anchor="middle" dominant-baseline="central" fill="#8b949e" font-size="9" font-family="Outfit,sans-serif">Test</text>
+            <circle cx="471" cy="67" r="16" fill="none" stroke="rgba(88,166,255,0.55)" stroke-width="1.3"/>
+            <text x="471" y="67" text-anchor="middle" dominant-baseline="central" fill="#8b949e" font-size="9" font-family="Outfit,sans-serif">Verify</text>
+            <circle cx="440" cy="120" r="45" fill="none" stroke="rgba(88,166,255,0.15)" stroke-width="1.5"/>
+            <path d="M 440 75 A 45 45 0 1 1 432 76" fill="none" stroke="#58a6ff" stroke-width="2.5" stroke-linecap="round" marker-end="url(#os-m)" opacity="0.85"/>
+            <text x="440" y="120" text-anchor="middle" dominant-baseline="central" fill="#79c0ff" font-size="14" font-weight="600" font-family="Outfit,sans-serif">Apply</text>
+            <!-- Phase 3: Archive -->
+            <circle cx="709" cy="67" r="16" fill="none" stroke="rgba(88,166,255,0.55)" stroke-width="1.3"/>
+            <text x="709" y="67" text-anchor="middle" dominant-baseline="central" fill="#8b949e" font-size="9" font-family="Outfit,sans-serif">Merge</text>
+            <circle cx="771" cy="67" r="16" fill="none" stroke="rgba(88,166,255,0.55)" stroke-width="1.3"/>
+            <text x="771" y="67" text-anchor="middle" dominant-baseline="central" fill="#8b949e" font-size="9" font-family="Outfit,sans-serif">Docs</text>
+            <circle cx="740" cy="120" r="45" fill="none" stroke="rgba(88,166,255,0.15)" stroke-width="1.5"/>
+            <path d="M 740 75 A 45 45 0 1 1 732 76" fill="none" stroke="#58a6ff" stroke-width="2.5" stroke-linecap="round" marker-end="url(#os-m)" opacity="0.85"/>
+            <text x="740" y="120" text-anchor="middle" dominant-baseline="central" fill="#79c0ff" font-size="14" font-weight="600" font-family="Outfit,sans-serif">Archive</text>
+          </svg>
+          <p class="sdlc-tagline">Lightweight delta-based workflow &mdash; each change proposes, applies, and archives spec deltas</p>
+        </section>
+
+        <!-- 10e: BMAD SDLC -->
+        <section>
+          <h3 style="background-image:linear-gradient(120deg,#d2a8ff 0%,#ff7b72 100%) !important;">BMAD SDLC</h3>
+          <svg viewBox="0 40 880 140" style="width:92%;display:block;margin:0.4em auto 0;">
+            <defs>
+              <marker id="bm-m" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#d2a8ff"/></marker>
+              <marker id="bm-c" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M 0 1 L 8 5 L 0 9 z" fill="#d2a8ff" opacity="0.5"/></marker>
+            </defs>
+            <!-- Connectors -->
+            <line x1="147" y1="120" x2="290" y2="120" stroke="rgba(210,168,255,0.35)" stroke-width="2.5" marker-end="url(#bm-c)"/>
+            <line x1="377" y1="120" x2="520" y2="120" stroke="rgba(210,168,255,0.35)" stroke-width="2.5" marker-end="url(#bm-c)"/>
+            <line x1="607" y1="120" x2="750" y2="120" stroke="rgba(210,168,255,0.35)" stroke-width="2.5" marker-end="url(#bm-c)"/>
+            <!-- Phase 1: Analysis -->
+            <circle cx="76" cy="71" r="15" fill="none" stroke="rgba(210,168,255,0.55)" stroke-width="1.3"/>
+            <text x="76" y="71" text-anchor="middle" dominant-baseline="central" fill="#8b949e" font-size="8.5" font-family="Outfit,sans-serif">Research</text>
+            <circle cx="134" cy="71" r="15" fill="none" stroke="rgba(210,168,255,0.55)" stroke-width="1.3"/>
+            <text x="134" y="71" text-anchor="middle" dominant-baseline="central" fill="#8b949e" font-size="8.5" font-family="Outfit,sans-serif">Validate</text>
+            <circle cx="105" cy="120" r="42" fill="none" stroke="rgba(210,168,255,0.15)" stroke-width="1.5"/>
+            <path d="M 105 78 A 42 42 0 1 1 98 79" fill="none" stroke="#d2a8ff" stroke-width="2.5" stroke-linecap="round" marker-end="url(#bm-m)" opacity="0.85"/>
+            <text x="105" y="120" text-anchor="middle" dominant-baseline="central" fill="#d2a8ff" font-size="13" font-weight="600" font-family="Outfit,sans-serif">Analysis</text>
+            <!-- Phase 2: Planning -->
+            <circle cx="306" cy="71" r="15" fill="none" stroke="rgba(210,168,255,0.55)" stroke-width="1.3"/>
+            <text x="306" y="71" text-anchor="middle" dominant-baseline="central" fill="#8b949e" font-size="8.5" font-family="Outfit,sans-serif">Scope</text>
+            <circle cx="364" cy="71" r="15" fill="none" stroke="rgba(210,168,255,0.55)" stroke-width="1.3"/>
+            <text x="364" y="71" text-anchor="middle" dominant-baseline="central" fill="#8b949e" font-size="8.5" font-family="Outfit,sans-serif">Prioritize</text>
+            <circle cx="335" cy="120" r="42" fill="none" stroke="rgba(210,168,255,0.15)" stroke-width="1.5"/>
+            <path d="M 335 78 A 42 42 0 1 1 328 79" fill="none" stroke="#d2a8ff" stroke-width="2.5" stroke-linecap="round" marker-end="url(#bm-m)" opacity="0.85"/>
+            <text x="335" y="120" text-anchor="middle" dominant-baseline="central" fill="#d2a8ff" font-size="13" font-weight="600" font-family="Outfit,sans-serif">Planning</text>
+            <!-- Phase 3: Solutioning -->
+            <circle cx="536" cy="71" r="15" fill="none" stroke="rgba(210,168,255,0.55)" stroke-width="1.3"/>
+            <text x="536" y="71" text-anchor="middle" dominant-baseline="central" fill="#8b949e" font-size="8.5" font-family="Outfit,sans-serif">Design</text>
+            <circle cx="594" cy="71" r="15" fill="none" stroke="rgba(210,168,255,0.55)" stroke-width="1.3"/>
+            <text x="594" y="71" text-anchor="middle" dominant-baseline="central" fill="#8b949e" font-size="8.5" font-family="Outfit,sans-serif">Review</text>
+            <circle cx="565" cy="120" r="42" fill="none" stroke="rgba(210,168,255,0.15)" stroke-width="1.5"/>
+            <path d="M 565 78 A 42 42 0 1 1 558 79" fill="none" stroke="#d2a8ff" stroke-width="2.5" stroke-linecap="round" marker-end="url(#bm-m)" opacity="0.85"/>
+            <text x="565" y="116" text-anchor="middle" fill="#d2a8ff" font-size="11" font-weight="600" font-family="Outfit,sans-serif">Solution-</text>
+            <text x="565" y="130" text-anchor="middle" fill="#d2a8ff" font-size="11" font-weight="600" font-family="Outfit,sans-serif">ing</text>
+            <!-- Phase 4: Implementation -->
+            <circle cx="766" cy="71" r="15" fill="none" stroke="rgba(210,168,255,0.55)" stroke-width="1.3"/>
+            <text x="766" y="71" text-anchor="middle" dominant-baseline="central" fill="#8b949e" font-size="8.5" font-family="Outfit,sans-serif">Code</text>
+            <circle cx="824" cy="71" r="15" fill="none" stroke="rgba(210,168,255,0.55)" stroke-width="1.3"/>
+            <text x="824" y="71" text-anchor="middle" dominant-baseline="central" fill="#8b949e" font-size="8.5" font-family="Outfit,sans-serif">QA</text>
+            <circle cx="795" cy="120" r="42" fill="none" stroke="rgba(210,168,255,0.15)" stroke-width="1.5"/>
+            <path d="M 795 78 A 42 42 0 1 1 788 79" fill="none" stroke="#d2a8ff" stroke-width="2.5" stroke-linecap="round" marker-end="url(#bm-m)" opacity="0.85"/>
+            <text x="795" y="120" text-anchor="middle" dominant-baseline="central" fill="#d2a8ff" font-size="12" font-weight="600" font-family="Outfit,sans-serif">Implement</text>
+          </svg>
+          <p class="sdlc-tagline">Multi-agent persona workflow &mdash; specialized agents drive each phase with domain expertise</p>
+        </section>
+
+        <!-- 10e-2: BMAD Commands — Analysis & Planning -->
+        <section>
+          <h3 style="background-image:linear-gradient(120deg,#d2a8ff 0%,#ff7b72 100%) !important;">BMAD Commands: Analysis &amp; Planning</h3>
+          <div class="two-col" style="margin-top:0.5em;gap:0.8em;">
+            <div>
+              <p style="font-size:0.65em;color:#d2a8ff;font-weight:600;margin-bottom:0.3em;">Phase 1: Analysis &amp; Discovery</p>
+              <table>
+                <thead><tr><th>Workflow</th><th>Command</th></tr></thead>
+                <tbody>
+                  <tr><td>Brainstorming</td><td><code>/bmad-brainstorming</code></td></tr>
+                  <tr><td>Product Brief</td><td><code>/bmad-product-brief</code></td></tr>
+                  <tr><td>PRFAQ Challenge</td><td><code>/bmad-prfaq</code></td></tr>
+                  <tr><td>Market Research</td><td><code>/bmad-market-research</code></td></tr>
+                  <tr><td>Domain Research</td><td><code>/bmad-domain-research</code></td></tr>
+                  <tr><td>Technical Research</td><td><code>/bmad-technical-research</code></td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div>
+              <p style="font-size:0.65em;color:#d2a8ff;font-weight:600;margin-bottom:0.3em;">Phase 2: Planning &amp; Product Definition</p>
+              <table>
+                <thead><tr><th>Workflow</th><th>Command</th></tr></thead>
+                <tbody>
+                  <tr><td>Create PRD</td><td><code>/bmad-create-prd</code></td></tr>
+                  <tr><td>Validate PRD</td><td><code>/bmad-validate-prd</code></td></tr>
+                  <tr><td>Edit PRD</td><td><code>/bmad-edit-prd</code></td></tr>
+                  <tr><td>Create UX Design</td><td><code>/bmad-create-ux-design</code></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- 10e-3: BMAD Commands — Solutioning & Implementation -->
+        <section>
+          <h3 style="background-image:linear-gradient(120deg,#d2a8ff 0%,#ff7b72 100%) !important;">BMAD Commands: Build &amp; Ship</h3>
+          <div class="two-col" style="margin-top:0.5em;gap:0.8em;">
+            <div>
+              <p style="font-size:0.65em;color:#d2a8ff;font-weight:600;margin-bottom:0.3em;">Phase 3: Solutioning &amp; Architecture</p>
+              <table>
+                <thead><tr><th>Workflow</th><th>Command</th></tr></thead>
+                <tbody>
+                  <tr><td>Generate Project Context</td><td><code>/bmad-generate-project-context</code></td></tr>
+                  <tr><td>Create Architecture</td><td><code>/bmad-create-architecture</code></td></tr>
+                  <tr><td>Create Epics &amp; Stories</td><td><code>/bmad-create-epics-and-stories</code></td></tr>
+                  <tr><td>Implementation Readiness</td><td><code>/bmad-check-implementation-readiness</code></td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div>
+              <p style="font-size:0.65em;color:#d2a8ff;font-weight:600;margin-bottom:0.3em;">Phase 4: Implementation</p>
+              <table>
+                <thead><tr><th>Workflow</th><th>Command</th></tr></thead>
+                <tbody>
+                  <tr><td>Sprint Planning</td><td><code>/bmad-sprint-planning</code></td></tr>
+                  <tr><td>Create Story</td><td><code>/bmad-create-story</code></td></tr>
+                  <tr><td>Dev Story</td><td><code>/bmad-dev-story</code></td></tr>
+                  <tr><td>Code Review</td><td><code>/bmad-code-review</code></td></tr>
+                  <tr><td>Quick Dev</td><td><code>/bmad-quick-dev</code></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- 10e-4: BMAD Commands — Anytime -->
+        <section>
+          <h3 style="background-image:linear-gradient(120deg,#d2a8ff 0%,#ff7b72 100%) !important;">BMAD Commands: Anytime</h3>
+          <div class="two-col" style="margin-top:0.5em;gap:0.8em;">
+            <div>
+              <p style="font-size:0.65em;color:#d2a8ff;font-weight:600;margin-bottom:0.3em;">Agent Personas</p>
+              <table>
+                <thead><tr><th>Command</th><th>Agent</th></tr></thead>
+                <tbody>
+                  <tr><td><code>/bmad-agent-analyst</code></td><td>Mary (Business Analyst)</td></tr>
+                  <tr><td><code>/bmad-agent-pm</code></td><td>John (Product Manager)</td></tr>
+                  <tr><td><code>/bmad-agent-ux-designer</code></td><td>Sally (UX Designer)</td></tr>
+                  <tr><td><code>/bmad-agent-architect</code></td><td>Winston (Architect)</td></tr>
+                  <tr><td><code>/bmad-agent-dev</code></td><td>Amelia (Developer)</td></tr>
+                  <tr><td><code>/bmad-agent-tech-writer</code></td><td>Paige (Tech Writer)</td></tr>
+                  <tr><td><code>/bmad-party-mode</code></td><td>Multi-agent roundtable</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div>
+              <p style="font-size:0.65em;color:#d2a8ff;font-weight:600;margin-bottom:0.3em;">Reviews &amp; Utilities</p>
+              <table>
+                <thead><tr><th>Command</th><th>What it does</th></tr></thead>
+                <tbody>
+                  <tr><td><code>/bmad-help</code></td><td>Recommends next step</td></tr>
+                  <tr><td><code>/bmad-advanced-elicitation</code></td><td>Socratic / red-team critique</td></tr>
+                  <tr><td><code>/bmad-review-adversarial-general</code></td><td>Critical review</td></tr>
+                  <tr><td><code>/bmad-review-edge-case-hunter</code></td><td>Edge-case analysis</td></tr>
+                  <tr><td><code>/bmad-distillator</code></td><td>Compress docs for LLM</td></tr>
+                  <tr><td><code>/bmad-checkpoint-preview</code></td><td>Human-in-the-loop review</td></tr>
+                  <tr><td><code>/bmad-correct-course</code></td><td>Mid-sprint correction</td></tr>
+                  <tr><td><code>/bmad-retrospective</code></td><td>Post-epic lessons learned</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- 10f: Spec Kit SDLC -->
+        <section>
+          <h3 style="background-image:linear-gradient(120deg,#3fb950 0%,#58a6ff 100%) !important;">Spec Kit SDLC</h3>
+          <svg viewBox="0 40 880 140" style="width:92%;display:block;margin:0.4em auto 0;">
+            <defs>
+              <marker id="sk-m" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#3fb950"/></marker>
+              <marker id="sk-c" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M 0 1 L 8 5 L 0 9 z" fill="#3fb950" opacity="0.5"/></marker>
+            </defs>
+            <!-- Connectors -->
+            <line x1="147" y1="120" x2="290" y2="120" stroke="rgba(63,185,80,0.35)" stroke-width="2.5" marker-end="url(#sk-c)"/>
+            <line x1="377" y1="120" x2="520" y2="120" stroke="rgba(63,185,80,0.35)" stroke-width="2.5" marker-end="url(#sk-c)"/>
+            <line x1="607" y1="120" x2="750" y2="120" stroke="rgba(63,185,80,0.35)" stroke-width="2.5" marker-end="url(#sk-c)"/>
+            <!-- Phase 1: Specify -->
+            <circle cx="76" cy="71" r="15" fill="none" stroke="rgba(63,185,80,0.55)" stroke-width="1.3"/>
+            <text x="76" y="71" text-anchor="middle" dominant-baseline="central" fill="#8b949e" font-size="8.5" font-family="Outfit,sans-serif">Refine</text>
+            <circle cx="134" cy="71" r="15" fill="none" stroke="rgba(63,185,80,0.55)" stroke-width="1.3"/>
+            <text x="134" y="71" text-anchor="middle" dominant-baseline="central" fill="#8b949e" font-size="8.5" font-family="Outfit,sans-serif">QA+BA</text>
+            <circle cx="105" cy="120" r="42" fill="none" stroke="rgba(63,185,80,0.15)" stroke-width="1.5"/>
+            <path d="M 105 78 A 42 42 0 1 1 98 79" fill="none" stroke="#3fb950" stroke-width="2.5" stroke-linecap="round" marker-end="url(#sk-m)" opacity="0.85"/>
+            <text x="105" y="120" text-anchor="middle" dominant-baseline="central" fill="#56d364" font-size="13" font-weight="600" font-family="Outfit,sans-serif">Specify</text>
+            <!-- Phase 2: Plan -->
+            <circle cx="306" cy="71" r="15" fill="none" stroke="rgba(63,185,80,0.55)" stroke-width="1.3"/>
+            <text x="306" y="71" text-anchor="middle" dominant-baseline="central" fill="#8b949e" font-size="8.5" font-family="Outfit,sans-serif">Govern</text>
+            <circle cx="364" cy="71" r="15" fill="none" stroke="rgba(63,185,80,0.55)" stroke-width="1.3"/>
+            <text x="364" y="71" text-anchor="middle" dominant-baseline="central" fill="#8b949e" font-size="8.5" font-family="Outfit,sans-serif">Validate</text>
+            <circle cx="335" cy="120" r="42" fill="none" stroke="rgba(63,185,80,0.15)" stroke-width="1.5"/>
+            <path d="M 335 78 A 42 42 0 1 1 328 79" fill="none" stroke="#3fb950" stroke-width="2.5" stroke-linecap="round" marker-end="url(#sk-m)" opacity="0.85"/>
+            <text x="335" y="120" text-anchor="middle" dominant-baseline="central" fill="#56d364" font-size="13" font-weight="600" font-family="Outfit,sans-serif">Plan</text>
+            <!-- Phase 3: Tasks -->
+            <circle cx="536" cy="71" r="15" fill="none" stroke="rgba(63,185,80,0.55)" stroke-width="1.3"/>
+            <text x="536" y="71" text-anchor="middle" dominant-baseline="central" fill="#8b949e" font-size="8.5" font-family="Outfit,sans-serif">Priority</text>
+            <circle cx="594" cy="71" r="15" fill="none" stroke="rgba(63,185,80,0.55)" stroke-width="1.3"/>
+            <text x="594" y="71" text-anchor="middle" dominant-baseline="central" fill="#8b949e" font-size="8.5" font-family="Outfit,sans-serif">Deps</text>
+            <circle cx="565" cy="120" r="42" fill="none" stroke="rgba(63,185,80,0.15)" stroke-width="1.5"/>
+            <path d="M 565 78 A 42 42 0 1 1 558 79" fill="none" stroke="#3fb950" stroke-width="2.5" stroke-linecap="round" marker-end="url(#sk-m)" opacity="0.85"/>
+            <text x="565" y="120" text-anchor="middle" dominant-baseline="central" fill="#56d364" font-size="13" font-weight="600" font-family="Outfit,sans-serif">Tasks</text>
+            <!-- Phase 4: Implement -->
+            <circle cx="766" cy="71" r="15" fill="none" stroke="rgba(63,185,80,0.55)" stroke-width="1.3"/>
+            <text x="766" y="71" text-anchor="middle" dominant-baseline="central" fill="#8b949e" font-size="8.5" font-family="Outfit,sans-serif">Test</text>
+            <circle cx="824" cy="71" r="15" fill="none" stroke="rgba(63,185,80,0.55)" stroke-width="1.3"/>
+            <text x="824" y="71" text-anchor="middle" dominant-baseline="central" fill="#8b949e" font-size="8.5" font-family="Outfit,sans-serif">Drift</text>
+            <circle cx="795" cy="120" r="42" fill="none" stroke="rgba(63,185,80,0.15)" stroke-width="1.5"/>
+            <path d="M 795 78 A 42 42 0 1 1 788 79" fill="none" stroke="#3fb950" stroke-width="2.5" stroke-linecap="round" marker-end="url(#sk-m)" opacity="0.85"/>
+            <text x="795" y="120" text-anchor="middle" dominant-baseline="central" fill="#56d364" font-size="12" font-weight="600" font-family="Outfit,sans-serif">Implement</text>
+          </svg>
+          <p class="sdlc-tagline">Constitutional governance workflow &mdash; nine-article constitution enforces invariants at every gate</p>
+        </section>
+
+        <!-- 10g: Tessl SDLC -->
+        <section>
+          <h3 style="background-image:linear-gradient(120deg,#ffa657 0%,#e3b341 100%) !important;">Tessl SDLC</h3>
+          <svg viewBox="0 40 880 140" style="width:92%;display:block;margin:0.4em auto 0;">
+            <defs>
+              <marker id="ts-m" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#ffa657"/></marker>
+              <marker id="ts-c" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M 0 1 L 8 5 L 0 9 z" fill="#ffa657" opacity="0.5"/></marker>
+            </defs>
+            <!-- Connectors -->
+            <line x1="185" y1="120" x2="392" y2="120" stroke="rgba(255,166,87,0.35)" stroke-width="2.5" marker-end="url(#ts-c)"/>
+            <line x1="485" y1="120" x2="692" y2="120" stroke="rgba(255,166,87,0.35)" stroke-width="2.5" marker-end="url(#ts-c)"/>
+            <!-- Phase 1: Spec -->
+            <circle cx="109" cy="67" r="16" fill="none" stroke="rgba(255,166,87,0.55)" stroke-width="1.3"/>
+            <text x="109" y="67" text-anchor="middle" dominant-baseline="central" fill="#8b949e" font-size="9" font-family="Outfit,sans-serif">Validate</text>
+            <circle cx="171" cy="67" r="16" fill="none" stroke="rgba(255,166,87,0.55)" stroke-width="1.3"/>
+            <text x="171" y="67" text-anchor="middle" dominant-baseline="central" fill="#8b949e" font-size="9" font-family="Outfit,sans-serif">Review</text>
+            <circle cx="140" cy="120" r="45" fill="none" stroke="rgba(255,166,87,0.15)" stroke-width="1.5"/>
+            <path d="M 140 75 A 45 45 0 1 1 132 76" fill="none" stroke="#ffa657" stroke-width="2.5" stroke-linecap="round" marker-end="url(#ts-m)" opacity="0.85"/>
+            <text x="140" y="120" text-anchor="middle" dominant-baseline="central" fill="#ffa657" font-size="14" font-weight="600" font-family="Outfit,sans-serif">Spec</text>
+            <!-- Phase 2: Generate -->
+            <circle cx="409" cy="67" r="16" fill="none" stroke="rgba(255,166,87,0.55)" stroke-width="1.3"/>
+            <text x="409" y="67" text-anchor="middle" dominant-baseline="central" fill="#8b949e" font-size="9" font-family="Outfit,sans-serif">Conform</text>
+            <circle cx="471" cy="67" r="16" fill="none" stroke="rgba(255,166,87,0.55)" stroke-width="1.3"/>
+            <text x="471" y="67" text-anchor="middle" dominant-baseline="central" fill="#8b949e" font-size="9" font-family="Outfit,sans-serif">Test</text>
+            <circle cx="440" cy="120" r="45" fill="none" stroke="rgba(255,166,87,0.15)" stroke-width="1.5"/>
+            <path d="M 440 75 A 45 45 0 1 1 432 76" fill="none" stroke="#ffa657" stroke-width="2.5" stroke-linecap="round" marker-end="url(#ts-m)" opacity="0.85"/>
+            <text x="440" y="120" text-anchor="middle" dominant-baseline="central" fill="#ffa657" font-size="14" font-weight="600" font-family="Outfit,sans-serif">Generate</text>
+            <!-- Phase 3: Deploy -->
+            <circle cx="709" cy="67" r="16" fill="none" stroke="rgba(255,166,87,0.55)" stroke-width="1.3"/>
+            <text x="709" y="67" text-anchor="middle" dominant-baseline="central" fill="#8b949e" font-size="9" font-family="Outfit,sans-serif">Monitor</text>
+            <circle cx="771" cy="67" r="16" fill="none" stroke="rgba(255,166,87,0.55)" stroke-width="1.3"/>
+            <text x="771" y="67" text-anchor="middle" dominant-baseline="central" fill="#8b949e" font-size="9" font-family="Outfit,sans-serif">Rollback</text>
+            <circle cx="740" cy="120" r="45" fill="none" stroke="rgba(255,166,87,0.15)" stroke-width="1.5"/>
+            <path d="M 740 75 A 45 45 0 1 1 732 76" fill="none" stroke="#ffa657" stroke-width="2.5" stroke-linecap="round" marker-end="url(#ts-m)" opacity="0.85"/>
+            <text x="740" y="120" text-anchor="middle" dominant-baseline="central" fill="#ffa657" font-size="14" font-weight="600" font-family="Outfit,sans-serif">Deploy</text>
+          </svg>
+          <p class="sdlc-tagline">Registry-centric workflow &mdash; specs are versioned, managed artifacts driving generation and deployment</p>
+        </section>
+      </section>
+
+      <!-- ========================== 11. ANTI-PATTERNS ========================== -->
+      <section>
+        <!-- 11a: Anti-Patterns (first 4) -->
+        <section>
+          <h2>SDD Anti-Patterns</h2>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.6em;margin-top:0.5em;">
+            <div class="info-card sc-red-org" style="font-size:0.68em;">
+              <strong class="sn-red-org"><span class="severity-badge sev-critical">Critical</span> The Spec Novel</strong>
+              Specs exceeding 5,000 words. AI loses early requirements as later sections dominate attention. <em>Fix: layer specs, each under 2K tokens.</em>
+            </div>
+            <div class="info-card sc-red-pur" style="font-size:0.68em;">
+              <strong class="sn-red-pur"><span class="severity-badge sev-critical">Critical</span> Skipping Verification</strong>
+              Trusting AI output without checking against spec. Drift accumulates silently. <em>Fix: mandatory verification before merge.</em>
+            </div>
+            <div class="info-card sc-org-yel" style="font-size:0.68em;">
+              <strong class="sn-org-yel"><span class="severity-badge sev-high">High</span> Spec-and-Forget</strong>
+              Spec written once, never updated. Subsequent AI sessions use outdated context. <em>Fix: treat specs as living documents, update during verification.</em>
+            </div>
+            <div class="info-card sc-pur-pnk" style="font-size:0.68em;">
+              <strong class="sn-pur-pnk"><span class="severity-badge sev-high">High</span> One Giant Prompt</strong>
+              Entire project spec in a single session. Internally inconsistent output. <em>Fix: decompose into focused tasks with scoped specs.</em>
+            </div>
+          </div>
+          <p style="font-size:0.55em; color:#8b949e; margin-top:0.6em;">&darr; more anti-patterns</p>
+        </section>
+
+        <!-- 11b: More Anti-Patterns (next 4) -->
+        <section>
+          <h3>More Anti-Patterns</h3>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.6em;margin-top:0.5em;">
+            <div class="info-card sc-org-yel" style="font-size:0.68em;">
+              <strong class="sn-org-yel"><span class="severity-badge sev-high">High</span> Vibe Spec</strong>
+              Vague language: &ldquo;make it fast,&rdquo; &ldquo;follow best practices.&rdquo; No measurable definitions. <em>Fix: every requirement must be testable.</em>
+            </div>
+            <div class="info-card sc-pur-pnk" style="font-size:0.68em;">
+              <strong class="sn-pur-pnk"><span class="severity-badge sev-medium">Medium</span> Implementation Spec</strong>
+              Dictating exact code structure instead of behavior. <em>Fix: specify what and why, not how.</em>
+            </div>
+            <div class="info-card sc-red-org" style="font-size:0.68em;">
+              <strong class="sn-red-org"><span class="severity-badge sev-medium">Medium</span> Copy-Paste Architecture</strong>
+              AI replicates training data patterns instead of matching your architecture. <em>Fix: explicit Constraint Specs with code examples.</em>
+            </div>
+            <div class="info-card sc-red-pur" style="font-size:0.68em;">
+              <strong class="sn-red-pur"><span class="severity-badge sev-high">High</span> Spec Without Tests</strong>
+              Requirements with no verification criteria. Acceptance = &ldquo;it looks right.&rdquo; <em>Fix: include test criteria in every spec.</em>
+            </div>
+          </div>
+        </section>
+      </section>
+
+      <!-- ========================== 12. QUICK START ========================== -->
+      <section>
+        <h2>Quick Start</h2>
+        <ol style="font-size:0.78em; margin-top:0.8em;">
+          <li>Write requirements before prompting</li>
+          <li>Define interfaces before internals</li>
+          <li>Set up project instructions (CLAUDE.md / .cursorrules)</li>
+          <li>Include &ldquo;never do&rdquo; rules</li>
+          <li>Use Plan Mode for exploration</li>
+          <li>Decompose features into focused tasks</li>
+          <li>Include test criteria in every spec</li>
+          <li>Generate tests before implementation</li>
+          <li>Verify every generation against spec</li>
+          <li>Update specs when reality diverges</li>
+        </ol>
+      </section>
+
+      <!-- ========================== 13. REFERENCES ========================== -->
+      <section>
+        <h2>References</h2>
+        <div class="two-col" style="margin-top:1em;">
+          <div>
+            <ul>
+              <li><strong>Thoughtworks:</strong> Spec-Driven Development (Dec 2025) &mdash; foundational article on SDD practices for AI agents</li>
+              <li><strong>Addy Osmani:</strong> How to Write a Good Spec &mdash; practical templates and anti-patterns for AI-consumable specifications</li>
+              <li><strong>Martin Fowler:</strong> SDD Tools Analysis &mdash; comparative review of spec frameworks and their tradeoffs</li>
+            </ul>
+          </div>
+          <div>
+            <ul>
+              <li><strong>GitHub Blog:</strong> spec-kit Launch &mdash; constitutional governance for AI development workflows</li>
+              <li><strong>InfoQ:</strong> Enterprise SDD &mdash; scaling spec-driven practices across large engineering organizations</li>
+              <li><strong>Martin Fowler:</strong> Context Engineering &mdash; the discipline of assembling the right context for AI generation</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+    </div><!-- /.slides -->
+  </div><!-- /.reveal -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.1.0/reveal.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.1.0/plugin/highlight/highlight.min.js"></script>
+  <script>
+    Reveal.initialize({
+      hash: true,
+      history: true,
+      navigationMode: 'default',
+      slideNumber: 'c/t',
+      showSlideNumber: 'all',
+      width: 1200,
+      height: 700,
+      margin: 0.06,
+      transition: 'slide',
+      transitionSpeed: 'fast',
+      plugins: [RevealHighlight],
+      keyboard: {
+        27: function() { Reveal.toggleOverview(); } // ESC for overview
+      }
+    });
+  </script>
+</body>
+</html>
