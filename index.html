@@ -1069,7 +1069,99 @@
         </section>
       </section>
 
-      <!-- ========================== 12. QUICK START ========================== -->
+      <!-- ========================== 12. PRECISION & SPEC-AS-CODE DEBATE ========================== -->
+      <section>
+        <!-- 12a: The Precision Argument -->
+        <section>
+          <h2>Precision &amp; the Spec-as-Code Debate</h2>
+          <div class="info-box" style="margin-top:0.6em;font-style:italic;">
+            &ldquo;Vibe coding gives the illusion that your vibes are precise abstractions. They will feel this way right up until they leak, which will happen when you add enough features or get enough scale.&rdquo; &mdash; <strong style="font-style:normal;">Steve Krouse</strong>
+          </div>
+          <div class="two-col" style="margin-top:0.8em;">
+            <div class="info-card sc-red-org" style="font-size:0.68em;">
+              <strong class="sn-red-org">Vibe Code = Legacy Code</strong>
+              Karpathy&rsquo;s &ldquo;forget the code even exists&rdquo; produces code nobody understands &mdash; we already have a name for that: legacy code. It resists modification and hides bugs.
+            </div>
+            <div class="info-card sc-blu-tel" style="font-size:0.68em;">
+              <strong class="sn-blu-tel">Programming = Theory Building</strong>
+              Peter Naur&rsquo;s insight: the value of a developer is the mental model, not the text produced. Specs encode that theory; vibe coding skips it entirely.
+            </div>
+          </div>
+          <div class="stat-box" style="margin-top:0.7em;">
+            <strong>The precision thesis:</strong> Even with AGI, the first use will be building <em>better abstractions</em> to master complexity. AI raises the ceiling on abstraction &mdash; it doesn&rsquo;t remove the need for it. Specs are the abstraction layer between intent and generated code.
+          </div>
+          <p style="font-size:0.55em; color:#8b949e; margin-top:0.6em;">&darr; the spec-as-code counterargument</p>
+        </section>
+
+        <!-- 12b: The Spec-as-Code Counterargument -->
+        <section>
+          <h3>A Sufficiently Detailed Spec Is Code</h3>
+          <div class="info-box" style="margin-top:0.6em;font-style:italic;">
+            &ldquo;If you try to make a specification document precise enough to reliably generate a working implementation, you must necessarily contort the document into code or something strongly resembling code.&rdquo; &mdash; <strong style="font-style:normal;">Gabriella Gonzalez</strong>
+          </div>
+          <table style="margin-top:0.7em;">
+            <thead><tr><th>Spec Precision</th><th>What Happens</th><th>Implication</th></tr></thead>
+            <tbody>
+              <tr><td><span class="severity-badge sev-high">Low</span> Vague language</td><td>AI generates plausible but incorrect code</td><td>High error rate, unreliable output</td></tr>
+              <tr><td><span class="severity-badge sev-medium">Medium</span> Structured reqs</td><td>Better output but gaps at edge cases</td><td>Sweet spot for SDD &mdash; reviewable + useful</td></tr>
+              <tr><td><span class="severity-badge sev-critical">High</span> Fully precise</td><td>Spec becomes indistinguishable from code</td><td>No simplification achieved</td></tr>
+            </tbody>
+          </table>
+          <div class="warn-box" style="margin-top:0.7em;">
+            <strong>The shared insight:</strong> Complexity is conserved. SDD doesn&rsquo;t eliminate complexity &mdash; it relocates it from opaque generated code into reviewable, version-controlled specifications. Don&rsquo;t promise &ldquo;no more coding&rdquo; &mdash; promise <em>explicit, reviewable intent</em>.
+          </div>
+        </section>
+      </section>
+
+      <!-- ========================== 13. ENTERPRISE SDD ADOPTION ========================== -->
+      <section>
+        <!-- 13a: Enterprise Challenges -->
+        <section>
+          <h2>Enterprise SDD Adoption</h2>
+          <div class="stat-box" style="margin-top:0.6em;">
+            <strong>Core insight:</strong> SDD at enterprise scale cannot be treated as a technical rollout. It shifts delivery from tactical prompting to collaborative intent articulation &mdash; requiring workflow, tooling, and organizational change.
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.6em;margin-top:0.7em;">
+            <div class="info-card sc-red-org" style="font-size:0.68em;">
+              <strong class="sn-red-org">Tooling Gaps</strong>
+              Most SDD tools optimize for single-developer workflows. Enterprise scale requires multi-repo coordination and cross-project dependency tracking.
+            </div>
+            <div class="info-card sc-pur-pnk" style="font-size:0.68em;">
+              <strong class="sn-pur-pnk">Workflow Integration</strong>
+              Teams use Jira, Azure DevOps, or Linear. SDD must integrate with existing backlogs as a communication bridge, not replace them.
+            </div>
+            <div class="info-card sc-org-yel" style="font-size:0.68em;">
+              <strong class="sn-org-yel">Brownfield Reality</strong>
+              Existing codebases lack specifications. Progressive spec growth (not reverse-engineering) is the only viable path at scale.
+            </div>
+            <div class="info-card sc-blu-tel" style="font-size:0.68em;">
+              <strong class="sn-blu-tel">Cross-Functional Access</strong>
+              Product, design, QA, and security all need spec access. Not everyone should need Git to participate in specification work.
+            </div>
+          </div>
+          <p style="font-size:0.55em; color:#8b949e; margin-top:0.6em;">&darr; maturity model &amp; review-centric roles</p>
+        </section>
+
+        <!-- 13b: Maturity Model & Review-Centric Roles -->
+        <section>
+          <h3>Adoption Maturity &amp; Review-Centric Roles</h3>
+          <table style="margin-top:0.5em;">
+            <thead><tr><th>Level</th><th>Practice</th><th>Entry Point</th></tr></thead>
+            <tbody>
+              <tr><td><span class="layer-badge badge-define">1</span></td><td>Requirements before prompting</td><td>Add structured requirements to existing tickets</td></tr>
+              <tr><td><span class="layer-badge badge-decompose">2</span></td><td>Interface contracts &amp; constraints</td><td>Define API specs and coding standards before generation</td></tr>
+              <tr><td><span class="layer-badge badge-constrain">3</span></td><td>Full lifecycle with verification</td><td>Implement all five SDD phases with automated checks</td></tr>
+              <tr><td><span class="layer-badge badge-generate">4</span></td><td>Cross-team spec governance</td><td>Shared standards, constitutional constraints</td></tr>
+            </tbody>
+          </table>
+          <div class="good-box" style="margin-top:0.7em;">
+            <strong>The review-centric shift:</strong> As SDD matures, developers move from writing code to reviewing AI output against specs. New skills required: spec evaluation, context engineering, verification design, and AI output assessment. Sustainable adoption means treating specs as <em>living, shared interfaces</em> that evolve with the codebase.
+          </div>
+          <p style="font-size:0.5em;color:#484f58;margin-top:0.5em;">Source: Hari Krishnan, &ldquo;Spec-Driven Development &mdash; Adoption at Enterprise Scale,&rdquo; InfoQ, Feb 2026</p>
+        </section>
+      </section>
+
+      <!-- ========================== 14. QUICK START ========================== -->
       <section>
         <h2>Quick Start</h2>
         <ol style="font-size:0.78em; margin-top:0.8em;">
@@ -1086,7 +1178,7 @@
         </ol>
       </section>
 
-      <!-- ========================== 13. REFERENCES ========================== -->
+      <!-- ========================== 15. REFERENCES ========================== -->
       <section>
         <h2>References</h2>
         <div class="two-col" style="margin-top:1em;">
@@ -1095,12 +1187,14 @@
               <li><strong>Thoughtworks:</strong> Spec-Driven Development (Dec 2025) &mdash; foundational article on SDD practices for AI agents</li>
               <li><strong>Addy Osmani:</strong> How to Write a Good Spec &mdash; practical templates and anti-patterns for AI-consumable specifications</li>
               <li><strong>Martin Fowler:</strong> SDD Tools Analysis &mdash; comparative review of spec frameworks and their tradeoffs</li>
+              <li><strong>Steve Krouse:</strong> Reports of code&rsquo;s death are greatly exaggerated &mdash; precision, abstraction, and why vibe code is legacy code</li>
             </ul>
           </div>
           <div>
             <ul>
               <li><strong>GitHub Blog:</strong> spec-kit Launch &mdash; constitutional governance for AI development workflows</li>
-              <li><strong>InfoQ:</strong> Enterprise SDD &mdash; scaling spec-driven practices across large engineering organizations</li>
+              <li><strong>Hari Krishnan (InfoQ):</strong> Enterprise SDD Adoption &mdash; scaling spec-driven practices, workflow integration, and review-centric roles</li>
+              <li><strong>Gabriella Gonzalez:</strong> A sufficiently detailed spec is code &mdash; the precision paradox and complexity conservation</li>
               <li><strong>Martin Fowler:</strong> Context Engineering &mdash; the discipline of assembling the right context for AI generation</li>
             </ul>
           </div>
