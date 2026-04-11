@@ -268,4 +268,4 @@ and constraints that bound the generation but are not the main input.
    https://github.blog/ai-and-ml/generative-ai/spec-driven-development-with-ai-get-started-with-a-new-open-source-toolkit/
 
 4. GitHub. "spec-kit: Spec-Driven Development Toolkit." 2026.
-   https://github.com/nickvidal/spec-kit
+   https://github.com/github/spec-kit

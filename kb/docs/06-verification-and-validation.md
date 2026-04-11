@@ -181,7 +181,7 @@ months is doing SDD well, even if they have not hit the target yet.
 ## References
 
 1. InfoQ. "Spec-Driven Development at Enterprise Scale."
-   https://www.infoq.com/articles/spec-driven-development-enterprise-scale/
+   https://www.infoq.com/articles/enterprise-spec-driven-development/
 
 2. Thoughtworks. "Spec-Driven Development." December 2025.
    https://www.thoughtworks.com/en-us/insights/blog/agile-engineering-practices/spec-driven-development-unpacking-2025-new-engineering-practices
@@ -190,4 +190,4 @@ months is doing SDD well, even if they have not hit the target yet.
    https://github.blog/ai-and-ml/generative-ai/spec-driven-development-with-ai-get-started-with-a-new-open-source-toolkit/
 
 4. CGI. "Spec-Driven Development for AI-Assisted Software Engineering."
-   https://www.cgi.com/en/article/technology-operations/spec-driven-development
+   https://www.cgi.com/en/blog/artificial-intelligence/spec-driven-development

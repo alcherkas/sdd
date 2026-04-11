@@ -215,4 +215,4 @@ alone produces the largest improvement in SDD adoption outcomes.
    https://addyosmani.com/blog/good-spec/
 
 3. CGI. "Spec-Driven Development for AI-Assisted Software Engineering."
-   https://www.cgi.com/en/article/technology-operations/spec-driven-development
+   https://www.cgi.com/en/blog/artificial-intelligence/spec-driven-development

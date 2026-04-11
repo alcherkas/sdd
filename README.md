@@ -104,11 +104,11 @@ Each guide covers the agent's spec workflow, project configuration, and recommen
 Key references that informed this framework:
 
 - [Thoughtworks: Spec-Driven Development](https://www.thoughtworks.com/en-us/insights/blog/generative-ai/spec-driven-development-ai-coding) -- the original articulation of SDD as a discipline
-- [Addy Osmani: How to Write a Good Spec](https://addyosmani.com/blog/spec-driven-dev/) -- practical guidance on specification quality
+- [Addy Osmani: How to Write a Good Spec](https://addyosmani.com/blog/good-spec/) -- practical guidance on specification quality
 - [Martin Fowler: AI-Native Development Tools](https://martinfowler.com/articles/exploring-gen-ai.html#memo-14) -- analysis of spec-driven tooling and context engineering
 - [GitHub Blog: Spec-Kit Launch](https://github.blog/changelog/2025-07-22-github-copilot-coding-agent-now-supports-spec-based-development/) -- GitHub's specification toolkit for Copilot
-- [Martin Fowler: Context Engineering for Coding Agents](https://martinfowler.com/articles/context-engineering-for-agents.html) -- how context shapes AI agent output quality
-- [InfoQ: Spec-Driven Development at Enterprise Scale](https://www.infoq.com/articles/spec-driven-development-enterprise/) -- enterprise adoption patterns and lessons learned
+- [Martin Fowler: Context Engineering for Coding Agents](https://martinfowler.com/articles/exploring-gen-ai/context-engineering-coding-agents.html) -- how context shapes AI agent output quality
+- [InfoQ: Spec-Driven Development at Enterprise Scale](https://www.infoq.com/articles/enterprise-spec-driven-development/) -- enterprise adoption patterns and lessons learned
 
 ## Contributing
 
