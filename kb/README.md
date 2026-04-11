@@ -17,6 +17,8 @@ Spec-Driven Development reference documentation. Start with the [Quick Start](ch
 | [08 — Anti-Patterns](docs/08-anti-patterns.md) | Common SDD failures and how to avoid them |
 | [09 — Measuring Effectiveness](docs/09-measuring-effectiveness.md) | Metrics, ROI, before/after comparison |
 | [10 — SDD and the SDLC](docs/10-sdd-and-sdlc.md) | How SDD transforms each SDLC phase with feedback loops |
+| [11 — Precision and Abstraction](docs/11-precision-and-abstraction.md) | Why code survives AI: precision, spec-as-code, and theory building |
+| [12 — Enterprise SDD Adoption](docs/12-enterprise-sdd-adoption.md) | Scaling SDD: workflow integration, brownfield support, review-centric roles |
 
 ## Frameworks and Tools
 
